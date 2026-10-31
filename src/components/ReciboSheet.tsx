@@ -456,47 +456,48 @@ export function ReciboSheet() {
       </p>
 
       <section className="composicion">
-        <Fondo color="#1f1f1f" />
+        <h2 className="composicion-titulo">
+          <Fondo color="#1f1f1f" />
+          <span>Detalle de la Composición Salarial</span>
+        </h2>
         <div className="composicion-body">
           <div className="cortes">
-            <h2>Detalle de la Composición Salarial</h2>
-            <p className="corte-titulo">Costo Total del Empleador</p>
-            {(
-              [
-                ['sindical', 'Total Costo Sindical:'],
-                ['seguridad_social', 'Total Seguridad Social (*):'],
-                ['obra_social', 'Total Obra Social:'],
-                ['inssjp', 'Total Costo INSSJP:'],
-                ['art', 'Total Costo ART:'],
-                ['camaras', 'Total Cámaras o entidades empresariales:'],
-                ['scvo', 'Total Costo SCVO:'],
-                ['otros', 'Total Otros Rubros:'],
-              ] as const
-            ).map(([rubro, label]) => {
-              const corte = tot.porRubro[rubro]
-              return (
-                <div className="corte" key={rubro}>
-                  <div className="corte-head">
-                    <span>{label}</span>
-                    <b className="mono">{dinero(corte.total)}</b>
+            <div className="cortes-grid" role="table">
+              <div className="cortes-head" role="row">
+                <span role="columnheader">Concepto</span>
+                <span role="columnheader">Empleador</span>
+                <span role="columnheader">Empleado</span>
+                <span role="columnheader">Total</span>
+              </div>
+              {(
+                [
+                  ['sindical', 'Costo Sindical'],
+                  ['seguridad_social', 'Seguridad Social (*)'],
+                  ['obra_social', 'Obra Social'],
+                  ['inssjp', 'INSSJP'],
+                  ['art', 'ART'],
+                  ['camaras', 'Entidades empresariales'],
+                  ['scvo', 'SCVO'],
+                  ['otros', 'Otros Rubros'],
+                ] as const
+              ).map(([rubro, label]) => {
+                const corte = tot.porRubro[rubro]
+                return (
+                  <div className="corte" key={rubro} role="row">
+                    <span role="cell">{label}</span>
+                    <span className="num" role="cell">
+                      {dinero(corte.empleador)}
+                    </span>
+                    <span className="num" role="cell">
+                      {dinero(corte.trabajador)}
+                    </span>
+                    <span className="num" role="cell">
+                      {dinero(corte.total)}
+                    </span>
                   </div>
-                  {(corte.empleador > 0 || corte.trabajador > 0) && (
-                    <div className="corte-split">
-                      {corte.empleador > 0 && (
-                        <span>
-                          Empleador <b className="mono">{dinero(corte.empleador)}</b>
-                        </span>
-                      )}
-                      {corte.trabajador > 0 && (
-                        <span>
-                          Trabajador <b className="mono">{dinero(corte.trabajador)}</b>
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
             <p className="nota">
               (*) Nota: Seguridad Social del empleador incluye SIPA, Fondo Nacional de Empleo y Asignaciones
               Familiares.
@@ -507,14 +508,6 @@ export function ReciboSheet() {
             {patrones && <DefsPatrones />}
             <div className="torta-pie-wrap">
               <PieChart partes={tot.partesTorta} patrones={patrones} />
-              <label className="burbuja burbuja-torta no-print">
-                <input
-                  type="checkbox"
-                  checked={patrones}
-                  onChange={(event) => setPatrones(event.target.checked)}
-                />
-                Patrones
-              </label>
             </div>
             <ul className="leyenda">
               {tot.partesTorta
@@ -525,17 +518,27 @@ export function ReciboSheet() {
                     <Fondo color="#fff" />
                     <MuestraParte clave={parte.key} patrones={patrones} />
                     <span>{parte.label}</span>
-                    <b>
+                    <span>
                       {parte.pct.toLocaleString('es-AR', {
                         maximumFractionDigits: 2,
                         minimumFractionDigits: 2,
                       })}
                       %
-                    </b>
+                    </span>
                   </li>
                 ))}
             </ul>
           </div>
+        </div>
+        <div className="ancla-torta no-print">
+          <label className="burbuja burbuja-torta">
+            <input
+              type="checkbox"
+              checked={patrones}
+              onChange={(event) => setPatrones(event.target.checked)}
+            />
+            Blanco y Negro
+          </label>
         </div>
       </section>
 

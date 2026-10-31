@@ -47,7 +47,8 @@ function Patron({ id, clave }: { id: string; clave: ClaveTorta }) {
       marca = (
         <>
           {blanco}
-          <path d="M-2 2 L2 -2 M0 8 L8 0 M6 10 L10 6" stroke="#111" strokeWidth="1.35" />
+          <rect width="4" height="4" fill="#111" />
+          <rect x="4" y="4" width="4" height="4" fill="#111" />
         </>
       )
       break
@@ -55,7 +56,12 @@ function Patron({ id, clave }: { id: string; clave: ClaveTorta }) {
       marca = (
         <>
           {blanco}
-          <path d="M-2 6 L2 10 M0 0 L8 8 M6 -2 L10 2" stroke="#111" strokeWidth="1.35" />
+          <path
+            d="M0 2 Q2 0.2 4 2 T8 2 M0 5.8 Q2 4 4 5.8 T8 5.8"
+            fill="none"
+            stroke="#111"
+            strokeWidth="1.2"
+          />
         </>
       )
       break
@@ -129,7 +135,12 @@ export function DefsPatrones() {
 export function MuestraParte({ clave, patrones }: { clave: ClaveTorta; patrones: boolean }) {
   return (
     <svg className="muestra" viewBox="0 0 16 16" aria-hidden="true">
-      <rect width="16" height="16" fill={patrones ? `url(#${idPatron(clave)})` : COLORES_TORTA[clave]} />
+      <circle
+        cx="8"
+        cy="8"
+        r="7.5"
+        fill={patrones ? `url(#${idPatron(clave)})` : COLORES_TORTA[clave]}
+      />
     </svg>
   )
 }

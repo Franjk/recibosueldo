@@ -670,18 +670,23 @@ select {
   position: relative;
   isolation: isolate;
   margin-top: 0.55rem;
-  background: var(--comp);
-  color: var(--white);
-  padding: 0.55rem 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--sheet);
   container: composicion / inline-size;
 }
 
-.composicion h2 {
+.composicion-titulo {
+  position: relative;
+  isolation: isolate;
+  background: var(--comp);
+  color: var(--white);
   font-size: 0.85rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin-bottom: 0.65rem;
   text-align: left;
+  padding: 0.35rem 0.55rem;
+  margin: 0;
 }
 
 .composicion-body {
@@ -689,39 +694,42 @@ select {
   grid-template-columns: minmax(0, 1.2fr) minmax(17.5rem, 0.92fr);
   gap: 0.85rem 1rem;
   align-items: start;
+  padding: 0.15rem 0.55rem 0.65rem;
 }
 
-.corte-titulo {
-  font-weight: 700;
-  margin-bottom: 0.4rem;
-  font-size: 0.8rem;
-}
-
-.corte {
-  margin-bottom: 0.35rem;
+.cortes-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(4.2rem, 1fr));
+  column-gap: 0.45rem;
+  row-gap: 0.18rem;
   font-size: 0.74rem;
 }
 
-.corte-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  font-weight: 700;
+.cortes-head,
+.corte {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: baseline;
 }
 
-.corte-split {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  padding-left: 0.7rem;
-  margin-top: 0.1rem;
-  opacity: 0.92;
+.cortes-head {
+  font-weight: 700;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  margin-bottom: 0.1rem;
+}
+
+.cortes-head span:nth-child(n + 2),
+.corte .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .nota {
   margin-top: 0.55rem;
   font-size: 0.62rem;
-  opacity: 0.8;
+  color: var(--muted);
   line-height: 1.35;
 }
 
@@ -734,7 +742,7 @@ select {
 
 .torta-pie-wrap {
   position: relative;
-  width: 100%;
+  width: 9.5rem;
 }
 
 .patrones-defs {
@@ -750,8 +758,18 @@ select {
   height: auto;
 }
 
+.ancla-torta {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+}
+
 .burbuja.burbuja-torta {
-  left: calc(100% + 1.65rem);
+  left: calc(0.45rem + 1px + 0.55rem);
+  top: 2.4rem;
+  transform: none;
   gap: 6px;
   height: 20px;
   padding: 0 6px 0 5px;
@@ -811,12 +829,13 @@ select {
   overflow: hidden;
   background: #fff;
   color: #111;
+  border: 1px solid var(--line);
   border-radius: 999px;
   line-height: 1.15;
   break-inside: avoid;
 }
 
-.leyenda b {
+.leyenda li > span:last-child {
   font-variant-numeric: tabular-nums;
 }
 
@@ -832,7 +851,7 @@ select {
 
 .banner > :not(.fondo),
 .totales .neto > :not(.fondo),
-.composicion > :not(.fondo),
+.composicion-titulo > :not(.fondo),
 .leyenda li > :not(.fondo) {
   position: relative;
   z-index: 1;
@@ -843,7 +862,8 @@ select {
   height: 0.85rem;
   flex: none;
   border: 1px solid #222;
-  border-radius: 0.18rem;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .firmas {
