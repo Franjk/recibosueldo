@@ -359,6 +359,8 @@ select {
 }
 
 .banner {
+  position: relative;
+  isolation: isolate;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -621,6 +623,8 @@ select {
 }
 
 .totales .neto {
+  position: relative;
+  isolation: isolate;
   background: var(--neto);
   color: var(--white);
 }
@@ -638,6 +642,8 @@ select {
 }
 
 .composicion {
+  position: relative;
+  isolation: isolate;
   margin-top: 0.55rem;
   background: var(--comp);
   color: var(--white);
@@ -758,11 +764,14 @@ select {
 }
 
 .leyenda li {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   gap: 0.32rem;
   margin: 0;
   padding: 0.14rem 0.42rem 0.14rem 0.16rem;
+  overflow: hidden;
   background: #fff;
   color: #111;
   border-radius: 999px;
@@ -772,6 +781,24 @@ select {
 
 .leyenda b {
   font-variant-numeric: tabular-nums;
+}
+
+.fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.banner > :not(.fondo),
+.totales .neto > :not(.fondo),
+.composicion > :not(.fondo),
+.leyenda li > :not(.fondo) {
+  position: relative;
+  z-index: 1;
 }
 
 .muestra {
@@ -806,13 +833,13 @@ select {
   text-align: center;
 }
 
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
   .totales {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-@media (max-width: 720px) {
+@media screen and (max-width: 720px) {
   .app {
     grid-template-columns: 1fr;
   }
@@ -874,8 +901,26 @@ select {
     margin-right: 0;
   }
 
+  .sheet,
+  .sheet * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .totales {
+    grid-template-columns: 1.1fr 1.1fr 1.1fr 1fr 1.35fr;
+  }
+
+  .totales > div {
+    min-width: 0;
+  }
+
   .cell-input {
     padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    appearance: none;
   }
 
   .lineas th:nth-child(1),

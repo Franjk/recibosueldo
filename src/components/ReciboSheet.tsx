@@ -12,6 +12,16 @@ function dinero(centavos: number): string {
   return `$ ${formatNumero(centavos)}`
 }
 
+// Mismo color que el fondo CSS. El rectángulo se imprime aunque
+// «Gráficos en segundo plano» esté destildado.
+function Fondo({ color }: { color: string }) {
+  return (
+    <svg className="fondo" viewBox="0 0 1 1" preserveAspectRatio="none" aria-hidden="true">
+      <rect width="1" height="1" fill={color} />
+    </svg>
+  )
+}
+
 function letrasNeto(centavos: number): string {
   return enLetrasPesos(centavos).replace(/^Son pesos\s+/i, '')
 }
@@ -322,6 +332,7 @@ export function ReciboSheet() {
       </div>
 
       <div className="banner">
+        <Fondo color="#2c2c2c" />
         <strong>COSTO TOTAL EMPLEADOR</strong>
         <span className="mono">{dinero(tot.costoEmpleador)}</span>
       </div>
@@ -365,6 +376,7 @@ export function ReciboSheet() {
       </table>
 
       <div className="banner soft">
+        <Fondo color="#3a3a3a" />
         <strong>Sueldo Bruto</strong>
         <span className="mono">{dinero(tot.bruto)}</span>
       </div>
@@ -421,6 +433,7 @@ export function ReciboSheet() {
             />
           </div>
           <div className="neto">
+            <Fondo color="#111" />
             <span>SUELDO NETO $</span>
             <b className="mono">{formatNumero(tot.neto)}</b>
           </div>
@@ -443,6 +456,7 @@ export function ReciboSheet() {
       </p>
 
       <section className="composicion">
+        <Fondo color="#1f1f1f" />
         <div className="composicion-body">
           <div className="cortes">
             <h2>Detalle de la Composición Salarial</h2>
@@ -508,6 +522,7 @@ export function ReciboSheet() {
                 .sort((a, b) => b.pct - a.pct)
                 .map((parte) => (
                   <li key={parte.key}>
+                    <Fondo color="#fff" />
                     <MuestraParte clave={parte.key} patrones={patrones} />
                     <span>{parte.label}</span>
                     <b>
