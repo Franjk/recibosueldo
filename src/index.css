@@ -100,6 +100,14 @@ select {
   text-align: center;
 }
 
+.aviso {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #ffc9c9;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -634,6 +642,11 @@ select {
 
   .sidebar .btn {
     width: auto;
+  }
+
+  .aviso {
+    flex-basis: 100%;
+    text-align: right;
   }
 }
 

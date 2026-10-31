@@ -10,6 +10,7 @@ interface Acciones {
   addLinea: (tipo: TipoLinea) => void
   removeLinea: (id: string) => void
   vaciar: () => void
+  cargar: (recibo: Recibo) => void
 }
 
 type Store = Recibo & Acciones
@@ -50,6 +51,7 @@ export const useStore = create<Store>()(
           }
         }),
       vaciar: () => set(reciboVacio()),
+      cargar: (recibo) => set(recibo),
     }),
     {
       name: 'recibo-wysiwyg-v1',
