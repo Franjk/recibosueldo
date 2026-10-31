@@ -377,7 +377,7 @@ export function ReciboSheet() {
 
       <div className="banner soft">
         <Fondo color="#3a3a3a" />
-        <strong>Sueldo Bruto</strong>
+        <strong>SUELDO BRUTO</strong>
         <span className="mono">{dinero(tot.bruto)}</span>
       </div>
 
