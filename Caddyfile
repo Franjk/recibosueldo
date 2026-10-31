@@ -1,0 +1,7 @@
+# Reemplazá el dominio. El build estático es la carpeta dist/.
+recibos.example.com {
+	root * /var/www/recibosueldo
+	encode gzip
+	try_files {path} /index.html
+	file_server
+}
