@@ -437,8 +437,9 @@ select {
   height: 0;
 }
 
+.lineas td.ancla-burbuja .burbuja-agregar,
 .ancla-agregar .burbuja-agregar {
-  top: 0;
+  top: 0.5rem;
   transform: none;
 }
 
