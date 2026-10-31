@@ -309,51 +309,59 @@ select {
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  gap: 0.28rem;
-  padding: 0.28rem 0.38rem 0.28rem 0.62rem;
-  background: #102a43;
-  color: #fff;
+  gap: 0.12rem;
+  padding: 0.28rem;
+  background: #fff;
+  color: #102a43;
+  border: 1.5px dashed #102a43;
   border-radius: 0.85rem;
-  box-shadow: 0 8px 18px rgba(16, 42, 67, 0.28);
+  box-shadow: 0 8px 18px rgba(16, 42, 67, 0.14);
   font-size: 0.72rem;
   line-height: 1.2;
   white-space: nowrap;
 }
 
-.burbuja::before {
-  content: '';
-  position: absolute;
-  left: -5px;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  background: #102a43;
-  transform: translateY(-50%) rotate(45deg);
+.burbuja select {
+  width: auto;
+  max-width: 11.5rem;
+  color: inherit;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23102a43' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.42rem center;
+  background-size: 0.55rem 0.34rem;
+  appearance: none;
+  border: 0;
+  border-radius: 0.45rem;
+  padding: 0.16rem 1.15rem 0.16rem 0.32rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
 }
 
-.burbuja select {
-  width: 9.6rem;
-  max-width: 9.6rem;
-  color: #102a43;
-  background: #f4f7f8;
-  border: 0;
-  border-radius: 0.35rem;
-  padding: 0.14rem 0.2rem;
-  font-size: 0.68rem;
+.burbuja select:hover {
+  background-color: #102a43;
+  color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 .burbuja .btn-mini {
   position: relative;
   display: inline-flex;
   flex: 0 0 auto;
-  width: 1.35rem;
-  height: 1.35rem;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-right: 0.16rem;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid currentColor;
   background: transparent;
-  color: #fff;
+  color: inherit;
   font-size: 0;
+  cursor: pointer;
 }
 
 .burbuja .btn-mini::before,
@@ -377,23 +385,13 @@ select {
 }
 
 .burbuja .btn-mini:hover {
-  background: #fff;
-  color: #102a43;
+  background: #102a43;
+  color: #fff;
 }
 
 .burbuja-agregar {
   flex-direction: column;
   align-items: stretch;
-  gap: 0.12rem;
-  padding: 0.28rem;
-  background: #fff;
-  color: #102a43;
-  border: 1.5px dashed #102a43;
-  box-shadow: 0 8px 18px rgba(16, 42, 67, 0.14);
-}
-
-.burbuja-agregar::before {
-  display: none;
 }
 
 .burbuja-agregar .btn-agregar {

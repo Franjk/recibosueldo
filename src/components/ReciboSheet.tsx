@@ -102,11 +102,7 @@ function ControlesHaber({
         aria-label="Tipo de línea"
         value={linea.tipo}
         onChange={(event) => {
-          const tipo = event.target.value as TipoLinea
-          onChange({
-            tipo,
-            rubro: tipo === 'deduccion' ? linea.rubro : null,
-          })
+          onChange({ tipo: event.target.value as TipoLinea })
         }}
       >
         {(['remunerativo', 'no_remunerativo', 'deduccion'] as const).map((tipo) => (
