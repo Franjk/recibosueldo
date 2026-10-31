@@ -144,6 +144,8 @@ select {
   box-shadow: var(--shadow);
   padding: 0.45rem;
   border: 1px solid #999;
+  margin-right: 19rem;
+  overflow: visible;
 }
 
 .grid-head,
@@ -243,7 +245,7 @@ select {
 
 .lineas th:nth-child(1),
 .lineas td:nth-child(1) {
-  width: 46%;
+  width: 52%;
 }
 
 .lineas th:nth-child(2),
@@ -252,7 +254,7 @@ select {
 .lineas td:nth-child(3),
 .lineas th:nth-child(4),
 .lineas td:nth-child(4) {
-  width: 14%;
+  width: 16%;
 }
 
 .lineas .subtotal td {
@@ -277,15 +279,98 @@ select {
   font-weight: 700;
 }
 
-.controles {
-  width: 9.5rem;
+.lineas th.ancla-burbuja,
+.lineas td.ancla-burbuja {
+  width: 0;
+  max-width: 0;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  position: relative;
+  overflow: visible;
+  font-size: 0;
+  line-height: 0;
+}
+
+.burbuja {
+  position: absolute;
+  z-index: 2;
+  left: calc(0.45rem + 1px + 0.55rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.28rem 0.38rem 0.28rem 0.62rem;
+  background: #102a43;
+  color: #fff;
+  border-radius: 0.85rem;
+  box-shadow: 0 8px 18px rgba(16, 42, 67, 0.28);
+  font-size: 0.72rem;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
-.controles select {
-  max-width: 6.2rem;
-  margin-right: 0.2rem;
+.burbuja::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: #102a43;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.burbuja select {
+  width: 7.5rem;
+  max-width: 7.5rem;
+  color: #102a43;
+  background: #f4f7f8;
+  border: 0;
+  border-radius: 0.35rem;
+  padding: 0.14rem 0.2rem;
   font-size: 0.68rem;
+}
+
+.burbuja .btn-mini {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: #fff;
+  font-size: 0;
+}
+
+.burbuja .btn-mini::before,
+.burbuja .btn-mini::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.burbuja .btn-mini::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.burbuja .btn-mini::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.burbuja .btn-mini:hover {
+  background: #fff;
+  color: #102a43;
 }
 
 .add-row {
@@ -468,11 +553,6 @@ select {
   .totales {
     grid-template-columns: 1fr 1fr;
   }
-
-  .lineas th:nth-child(5),
-  .lineas td.controles {
-    width: auto;
-  }
 }
 
 @media (max-width: 720px) {
@@ -541,6 +621,7 @@ select {
     box-shadow: none;
     border: 0;
     padding: 0;
+    margin-right: 0;
   }
 
   .cell-input {

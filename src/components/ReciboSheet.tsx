@@ -42,6 +42,14 @@ function RubroSelect({
   )
 }
 
+function BurbujaLinea({ children }: { children: ReactNode }) {
+  return (
+    <td className="ancla-burbuja no-print">
+      <div className="burbuja">{children}</div>
+    </td>
+  )
+}
+
 function ControlesContribucion({
   linea,
   onChange,
@@ -52,12 +60,12 @@ function ControlesContribucion({
   onRemove: () => void
 }) {
   return (
-    <td className="controles no-print">
+    <BurbujaLinea>
       <RubroSelect linea={linea} onChange={onChange} />
       <button type="button" className="btn-mini" onClick={onRemove} aria-label="Quitar línea">
         ×
       </button>
-    </td>
+    </BurbujaLinea>
   )
 }
 
@@ -71,7 +79,7 @@ function ControlesHaber({
   onRemove: () => void
 }) {
   return (
-    <td className="controles no-print">
+    <BurbujaLinea>
       <select
         aria-label="Tipo de línea"
         value={linea.tipo}
@@ -93,7 +101,7 @@ function ControlesHaber({
       <button type="button" className="btn-mini" onClick={onRemove} aria-label="Quitar línea">
         ×
       </button>
-    </td>
+    </BurbujaLinea>
   )
 }
 
@@ -316,7 +324,7 @@ export function ReciboSheet() {
             <th className="num">Unidad</th>
             <th className="num">Base</th>
             <th className="num">Monto</th>
-            <th className="no-print" />
+            <th className="ancla-burbuja no-print" />
           </tr>
         </thead>
         <tbody>
@@ -336,7 +344,7 @@ export function ReciboSheet() {
           <tr className="subtotal">
             <td colSpan={3}>SUBTOTAL CONTRIBUCIONES EMPLEADOR</td>
             <td className="mono right">{dinero(tot.contribuciones)}</td>
-            <td className="no-print" />
+            <td className="ancla-burbuja no-print" />
           </tr>
         </tbody>
       </table>
@@ -359,7 +367,7 @@ export function ReciboSheet() {
             <th className="num">Unidad</th>
             <th className="num">Base</th>
             <th className="num">Monto</th>
-            <th className="no-print" />
+            <th className="ancla-burbuja no-print" />
           </tr>
         </thead>
         <tbody>
