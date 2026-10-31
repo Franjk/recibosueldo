@@ -53,6 +53,7 @@ export function MoneyCell({
   return (
     <input
       className="cell-input mono right"
+      size={Math.max(mostrado.length, 1)}
       inputMode="decimal"
       spellCheck={false}
       aria-label={ariaLabel}
