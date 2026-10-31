@@ -136,6 +136,9 @@ select {
 
 .sheet {
   width: min(100%, 210mm);
+  min-height: 297mm;
+  display: flex;
+  flex-direction: column;
   background: var(--sheet);
   color: var(--ink);
   box-shadow: var(--shadow);
@@ -441,16 +444,24 @@ select {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  margin-top: 1.4rem;
-  padding: 0 0.4rem 0.6rem;
+  margin-top: auto;
+  padding: 1.5rem 0.4rem 0.15rem;
 }
 
 .firma {
-  border-top: 1px solid var(--ink);
-  padding-top: 0.3rem;
-  min-height: 3.2rem;
+  display: flex;
+  align-items: flex-end;
+  min-height: 4.4rem;
   font-size: 0.78rem;
   font-weight: 700;
+}
+
+.firma span {
+  display: block;
+  width: 100%;
+  border-top: 1px solid var(--ink);
+  padding-top: 0.3rem;
+  text-align: center;
 }
 
 @media (max-width: 900px) {
@@ -526,6 +537,7 @@ select {
 
   .sheet {
     width: 100%;
+    min-height: 281mm;
     box-shadow: none;
     border: 0;
     padding: 0;
