@@ -177,179 +177,149 @@ export function ReciboSheet() {
 
   return (
     <article className="sheet">
-      <table className="grid-head">
-        <tbody>
-          <tr>
-            <td className="lab">Empresa</td>
-            <td className="lab">Domicilio Legal</td>
-            <td className="lab">C.U.I.T. Empleador</td>
-          </tr>
-          <tr>
-            <td>
-              <CellInput
-                ariaLabel="Empresa"
-                value={recibo.empresa}
-                onChange={(empresa) => recibo.patch({ empresa })}
-              />
-            </td>
-            <td>
-              <CellInput
-                ariaLabel="Domicilio legal"
-                value={recibo.domicilioLegal}
-                onChange={(domicilioLegal) => recibo.patch({ domicilioLegal })}
-              />
-            </td>
-            <td>
-              <CellInput
-                className="mono"
-                ariaLabel="CUIT empleador"
-                value={recibo.cuitEmpleador}
-                onChange={(cuitEmpleador) => recibo.patch({ cuitEmpleador })}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="encabezado">
+        <div className="lab g-emp">Empleador</div>
+        <div className="lab g-dom">Domicilio Legal</div>
+        <div className="lab g-cuit">C.U.I.T. Empleador</div>
+        <div className="g-emp">
+          <CellInput
+            ariaLabel="Empleador"
+            value={recibo.empresa}
+            onChange={(empresa) => recibo.patch({ empresa })}
+          />
+        </div>
+        <div className="g-dom">
+          <CellInput
+            ariaLabel="Domicilio legal"
+            value={recibo.domicilioLegal}
+            onChange={(domicilioLegal) => recibo.patch({ domicilioLegal })}
+          />
+        </div>
+        <div className="g-cuit">
+          <CellInput
+            className="mono"
+            ariaLabel="CUIT empleador"
+            value={recibo.cuitEmpleador}
+            onChange={(cuitEmpleador) => recibo.patch({ cuitEmpleador })}
+          />
+        </div>
 
-      <table className="grid-head">
-        <tbody>
-          <tr>
-            <td className="lab narrow">Q</td>
-            <td className="lab periodo">Mes</td>
-            <td className="lab periodo">Año</td>
-            <td className="lab">Apellido y Nombre</td>
-            <td className="lab">Nro. Legajo</td>
-            <td className="lab">Sueldo Bruto</td>
-            <td className="lab">Antigüedad</td>
-          </tr>
-          <tr>
-            <td>
-              <CellInput
-                className="center"
-                ariaLabel="Quincena"
-                value={recibo.quincena}
-                onChange={(quincena) => recibo.patch({ quincena })}
-              />
-            </td>
-            <td>
-              <CellInput
-                className="center"
-                ariaLabel="Mes"
-                value={recibo.mes}
-                onChange={(mes) => recibo.patch({ mes })}
-              />
-            </td>
-            <td>
-              <CellInput
-                className="center"
-                ariaLabel="Año"
-                value={recibo.anio}
-                onChange={(anio) => recibo.patch({ anio })}
-              />
-            </td>
-            <td>
-              <CellInput
-                ariaLabel="Apellido y nombre"
-                value={recibo.apellidoNombre}
-                onChange={(apellidoNombre) => recibo.patch({ apellidoNombre })}
-              />
-            </td>
-            <td>
-              <CellInput
-                className="center"
-                ariaLabel="Número de legajo"
-                value={recibo.legajo}
-                onChange={(legajo) => recibo.patch({ legajo })}
-              />
-            </td>
-            <td className="mono right strong">{dinero(tot.bruto)}</td>
-            <td>
-              <CellInput
-                ariaLabel="Antigüedad"
-                value={recibo.antiguedad}
-                onChange={(antiguedad) => recibo.patch({ antiguedad })}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div className="lab g-q">Q</div>
+        <div className="lab g-mes">Mes</div>
+        <div className="lab g-anio">Año</div>
+        <div className="lab g-nom">Apellido y Nombre</div>
+        <div className="lab g-leg">Nro. Legajo</div>
+        <div className="lab g-ing">Fec. Ingreso</div>
+        <div className="lab g-ant">Antigüedad</div>
+        <div className="g-q">
+          <CellInput
+            className="center"
+            ariaLabel="Quincena"
+            value={recibo.quincena}
+            onChange={(quincena) => recibo.patch({ quincena })}
+          />
+        </div>
+        <div className="g-mes">
+          <CellInput
+            className="center"
+            ariaLabel="Mes"
+            value={recibo.mes}
+            onChange={(mes) => recibo.patch({ mes })}
+          />
+        </div>
+        <div className="g-anio">
+          <CellInput
+            className="center"
+            ariaLabel="Año"
+            value={recibo.anio}
+            onChange={(anio) => recibo.patch({ anio })}
+          />
+        </div>
+        <div className="g-nom">
+          <CellInput
+            ariaLabel="Apellido y nombre"
+            value={recibo.apellidoNombre}
+            onChange={(apellidoNombre) => recibo.patch({ apellidoNombre })}
+          />
+        </div>
+        <div className="g-leg">
+          <CellInput
+            className="center"
+            ariaLabel="Número de legajo"
+            value={recibo.legajo}
+            onChange={(legajo) => recibo.patch({ legajo })}
+          />
+        </div>
+        <div className="g-ing">
+          <CellInput
+            className="center"
+            ariaLabel="Fecha de ingreso"
+            value={recibo.fechaIngreso}
+            onChange={(fechaIngreso) => recibo.patch({ fechaIngreso })}
+          />
+        </div>
+        <div className="g-ant">
+          <CellInput
+            ariaLabel="Antigüedad"
+            value={recibo.antiguedad}
+            onChange={(antiguedad) => recibo.patch({ antiguedad })}
+          />
+        </div>
 
-      <table className="grid-head">
-        <tbody>
-          <tr>
-            <td className="lab">C.U.I.L.</td>
-            <td className="lab">Categoría Laboral</td>
-            <td className="lab">Fec. Ingreso</td>
-            <td className="lab">Lugar de Pago</td>
-          </tr>
-          <tr>
-            <td>
-              <CellInput
-                className="mono"
-                ariaLabel="CUIL"
-                value={recibo.cuil}
-                onChange={(cuil) => recibo.patch({ cuil })}
-              />
-            </td>
-            <td>
-              <CellInput
-                ariaLabel="Categoría laboral"
-                value={recibo.categoria}
-                onChange={(categoria) => recibo.patch({ categoria })}
-              />
-            </td>
-            <td>
-              <CellInput
-                className="center"
-                ariaLabel="Fecha de ingreso"
-                value={recibo.fechaIngreso}
-                onChange={(fechaIngreso) => recibo.patch({ fechaIngreso })}
-              />
-            </td>
-            <td>
-              <CellInput
-                ariaLabel="Lugar de pago"
-                value={recibo.lugarPago}
-                onChange={(lugarPago) => recibo.patch({ lugarPago })}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div className="lab g-cuil">C.U.I.L.</div>
+        <div className="lab g-cat">Categoría Laboral</div>
+        <div className="lab g-lug">Lugar de Pago</div>
+        <div className="lab g-bru">Sueldo Bruto</div>
+        <div className="g-cuil">
+          <CellInput
+            className="mono"
+            ariaLabel="CUIL"
+            value={recibo.cuil}
+            onChange={(cuil) => recibo.patch({ cuil })}
+          />
+        </div>
+        <div className="g-cat">
+          <CellInput
+            ariaLabel="Categoría laboral"
+            value={recibo.categoria}
+            onChange={(categoria) => recibo.patch({ categoria })}
+          />
+        </div>
+        <div className="g-lug">
+          <CellInput
+            ariaLabel="Lugar de pago"
+            value={recibo.lugarPago}
+            onChange={(lugarPago) => recibo.patch({ lugarPago })}
+          />
+        </div>
+        <div className="g-bru mono right strong">{dinero(tot.bruto)}</div>
 
-      <table className="grid-head">
-        <tbody>
-          <tr>
-            <td className="lab">Banco del depósito</td>
-            <td className="lab">Período del depósito</td>
-            <td className="lab">Fecha Pago Aportes</td>
-          </tr>
-          <tr>
-            <td>
-              <CellInput
-                ariaLabel="Banco del depósito de aportes"
-                value={recibo.bancoDeposito ?? ''}
-                onChange={(bancoDeposito) => recibo.patch({ bancoDeposito })}
-              />
-            </td>
-            <td>
-              <CellInput
-                ariaLabel="Período del depósito de aportes"
-                value={recibo.periodoDeposito ?? ''}
-                onChange={(periodoDeposito) => recibo.patch({ periodoDeposito })}
-              />
-            </td>
-            <td>
-              <CellInput
-                className="center"
-                ariaLabel="Fecha pago aportes"
-                value={recibo.fechaPagoAportes}
-                onChange={(fechaPagoAportes) => recibo.patch({ fechaPagoAportes })}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div className="lab g-ban">Banco del depósito</div>
+        <div className="lab g-per">Período del depósito</div>
+        <div className="lab g-fap">Fecha Pago Aportes</div>
+        <div className="g-ban">
+          <CellInput
+            ariaLabel="Banco del depósito de aportes"
+            value={recibo.bancoDeposito ?? ''}
+            onChange={(bancoDeposito) => recibo.patch({ bancoDeposito })}
+          />
+        </div>
+        <div className="g-per">
+          <CellInput
+            ariaLabel="Período del depósito de aportes"
+            value={recibo.periodoDeposito ?? ''}
+            onChange={(periodoDeposito) => recibo.patch({ periodoDeposito })}
+          />
+        </div>
+        <div className="g-fap">
+          <CellInput
+            className="center"
+            ariaLabel="Fecha pago aportes"
+            value={recibo.fechaPagoAportes}
+            onChange={(fechaPagoAportes) => recibo.patch({ fechaPagoAportes })}
+          />
+        </div>
+      </div>
 
       <div className="banner">
         <strong>COSTO TOTAL EMPLEADOR</strong>
