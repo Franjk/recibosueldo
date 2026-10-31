@@ -15,7 +15,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="toolbar no-print">
+      <header className="sidebar no-print">
         <div>
           <p className="eyebrow">Recibo de haberes</p>
           <h1>Editor</h1>

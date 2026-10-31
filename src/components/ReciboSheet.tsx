@@ -193,8 +193,8 @@ export function ReciboSheet() {
         <tbody>
           <tr>
             <td className="lab narrow">Q</td>
-            <td className="lab narrow">M</td>
-            <td className="lab narrow">Año</td>
+            <td className="lab periodo">Mes</td>
+            <td className="lab periodo">Año</td>
             <td className="lab">Apellido y Nombre</td>
             <td className="lab">Nro. Legajo</td>
             <td className="lab">Sueldo Bruto</td>
@@ -425,9 +425,9 @@ export function ReciboSheet() {
       </p>
 
       <section className="composicion">
-        <h2>Detalle de la Composición Salarial</h2>
         <div className="composicion-body">
           <div className="cortes">
+            <h2>Detalle de la Composición Salarial</h2>
             <p className="corte-titulo">Costo Total del Empleador</p>
             {(
               [

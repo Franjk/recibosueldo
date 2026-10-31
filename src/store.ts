@@ -51,7 +51,11 @@ export const useStore = create<Store>()(
         }),
       vaciar: () => set(reciboVacio()),
     }),
-    { name: 'recibo-wysiwyg-v1' },
+    {
+      name: 'recibo-wysiwyg-v1',
+      version: 1,
+      migrate: (persistedState) => persistedState,
+    },
   ),
 )
 
