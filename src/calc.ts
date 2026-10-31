@@ -1,6 +1,10 @@
 import type { CorteRubro, Linea, Recibo, Rubro, TipoLinea, Totales } from './types.ts'
 import { RUBRO_LABEL, RUBROS } from './types.ts'
 
+export function rubroDeLinea(tipo: TipoLinea, rubro: Rubro | null): Rubro | null {
+  return tipo === 'contribucion' || tipo === 'deduccion' ? rubro : null
+}
+
 export function nuevaLinea(tipo: TipoLinea): Linea {
   return {
     id: crypto.randomUUID(),

@@ -69,6 +69,19 @@ describe('json del recibo', () => {
     expect(parsearRecibo(texto).empresa).toBe('Acme S.A.')
   })
 
+  it('deja sin rubro los conceptos remunerativos y no remunerativos', () => {
+    const recibo = parsearRecibo(
+      JSON.stringify({
+        lineas: [
+          { tipo: 'remunerativo', rubro: 'art', montoCentavos: 1 },
+          { tipo: 'no_remunerativo', rubro: 'sindical', montoCentavos: 2 },
+          { tipo: 'deduccion', rubro: 'obra_social', montoCentavos: 3 },
+        ],
+      }),
+    )
+    expect(recibo.lineas.map((linea) => linea.rubro)).toEqual([null, null, 'obra_social'])
+  })
+
   it('asigna otro id si la línea lo repite', () => {
     const recibo = parsearRecibo(
       JSON.stringify({

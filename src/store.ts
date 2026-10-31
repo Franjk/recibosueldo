@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { nuevaLinea, reciboVacio } from './calc.ts'
+import { nuevaLinea, reciboVacio, rubroDeLinea } from './calc.ts'
 import type { Linea, Recibo, TipoLinea } from './types.ts'
 
 interface Acciones {
@@ -22,7 +22,11 @@ export const useStore = create<Store>()(
       patch: (patch) => set(patch),
       setLinea: (id, patch) =>
         set((estado) => ({
-          lineas: estado.lineas.map((linea) => (linea.id === id ? { ...linea, ...patch } : linea)),
+          lineas: estado.lineas.map((linea) => {
+            if (linea.id !== id) return linea
+            const siguiente = { ...linea, ...patch }
+            return { ...siguiente, rubro: rubroDeLinea(siguiente.tipo, siguiente.rubro) }
+          }),
         })),
       addLinea: (tipo) =>
         set((estado) => {
@@ -51,20 +55,31 @@ export const useStore = create<Store>()(
           }
         }),
       vaciar: () => set(reciboVacio()),
-      cargar: (recibo) => set(recibo),
+      cargar: (recibo) =>
+        set({
+          ...recibo,
+          lineas: recibo.lineas.map((linea) => ({
+            ...linea,
+            rubro: rubroDeLinea(linea.tipo, linea.rubro),
+          })),
+        }),
     }),
     {
       name: 'recibo-wysiwyg-v1',
-      version: 2,
+      version: 3,
       migrate: (persistedState) => {
         const base = reciboVacio()
         const previo = (persistedState ?? {}) as Partial<Recibo>
+        const lineas = previo.lineas && previo.lineas.length > 0 ? previo.lineas : base.lineas
         return {
           ...base,
           ...previo,
           bancoDeposito: previo.bancoDeposito ?? '',
           periodoDeposito: previo.periodoDeposito ?? '',
-          lineas: previo.lineas && previo.lineas.length > 0 ? previo.lineas : base.lineas,
+          lineas: lineas.map((linea) => ({
+            ...linea,
+            rubro: rubroDeLinea(linea.tipo, linea.rubro),
+          })),
         }
       },
     },

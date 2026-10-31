@@ -111,7 +111,8 @@ function ControlesHaber({
         aria-label="Tipo de línea"
         value={linea.tipo}
         onChange={(event) => {
-          onChange({ tipo: event.target.value as TipoLinea })
+          const tipo = event.target.value as TipoLinea
+          onChange({ tipo, rubro: tipo === 'deduccion' ? linea.rubro : null })
         }}
       >
         {(['remunerativo', 'no_remunerativo', 'deduccion'] as const).map((tipo) => (
@@ -120,7 +121,7 @@ function ControlesHaber({
           </option>
         ))}
       </select>
-      <RubroSelect linea={linea} onChange={onChange} />
+      {linea.tipo === 'deduccion' && <RubroSelect linea={linea} onChange={onChange} />}
       <button type="button" className="btn-mini" onClick={onRemove} aria-label="Quitar línea">
         ×
       </button>

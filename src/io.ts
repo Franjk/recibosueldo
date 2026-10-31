@@ -1,3 +1,4 @@
+import { rubroDeLinea } from './calc.ts'
 import type { Linea, Recibo, Rubro, TipoLinea } from './types.ts'
 import { RUBROS, TIPOS_LINEA } from './types.ts'
 
@@ -67,7 +68,7 @@ export function datosRecibo(recibo: Recibo): Recibo {
       id: linea.id,
       descripcion: linea.descripcion,
       tipo: linea.tipo,
-      rubro: linea.rubro,
+      rubro: rubroDeLinea(linea.tipo, linea.rubro),
       unidad: linea.unidad,
       baseCentavos: linea.baseCentavos,
       montoCentavos: linea.montoCentavos,
@@ -150,7 +151,7 @@ function lineaDesdeJson(valor: unknown, numero: number, usados: Set<string>): Li
     id: idLinea(valor.id, usados),
     descripcion: textoCampo(valor.descripcion, `descripción de la línea ${numero}`),
     tipo,
-    rubro: rubroLinea(valor.rubro, numero),
+    rubro: rubroDeLinea(tipo, rubroLinea(valor.rubro, numero)),
     unidad: textoCampo(valor.unidad, `unidad de la línea ${numero}`),
     baseCentavos:
       valor.baseCentavos === undefined
