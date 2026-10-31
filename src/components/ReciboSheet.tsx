@@ -1,13 +1,12 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { filasHaberes, filasTipo, totales } from '../calc.ts'
 import { enLetrasPesos } from '../letras.ts'
 import { formatNumero } from '../money.ts'
 import { useStore } from '../store.ts'
 import type { Linea, Rubro, TipoLinea } from '../types.ts'
 import { RUBRO_LABEL, RUBROS, TIPO_HABER_LABEL } from '../types.ts'
-import { COLORES_TORTA } from '../pieColors.ts'
 import { CellInput, MoneyCell } from './Fields.tsx'
-import { PieChart } from './PieChart.tsx'
+import { DefsPatrones, MuestraParte, PieChart } from './PieChart.tsx'
 
 function dinero(centavos: number): string {
   return `$ ${formatNumero(centavos)}`
@@ -171,6 +170,7 @@ function FilaEditable({
 
 export function ReciboSheet() {
   const recibo = useStore()
+  const [patrones, setPatrones] = useState(false)
   const tot = totales(recibo.lineas)
   const contribuciones = filasTipo(recibo.lineas, 'contribucion')
   const haberes = filasHaberes(recibo.lineas)
@@ -490,21 +490,35 @@ export function ReciboSheet() {
           </div>
 
           <div className="torta-box">
-            <PieChart partes={tot.partesTorta} />
+            {patrones && <DefsPatrones />}
+            <div className="torta-pie-wrap">
+              <PieChart partes={tot.partesTorta} patrones={patrones} />
+              <label className="burbuja burbuja-torta no-print">
+                <input
+                  type="checkbox"
+                  checked={patrones}
+                  onChange={(event) => setPatrones(event.target.checked)}
+                />
+                Patrones
+              </label>
+            </div>
             <ul className="leyenda">
-              {tot.partesTorta.map((parte) => (
-                <li key={parte.key}>
-                  <i style={{ background: COLORES_TORTA[parte.key] }} />
-                  <span>{parte.label}</span>
-                  <b>
-                    {parte.pct.toLocaleString('es-AR', {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
-                    })}
-                    %
-                  </b>
-                </li>
-              ))}
+              {tot.partesTorta
+                .filter((parte) => parte.valor > 0)
+                .sort((a, b) => b.pct - a.pct)
+                .map((parte) => (
+                  <li key={parte.key}>
+                    <MuestraParte clave={parte.key} patrones={patrones} />
+                    <span>{parte.label}</span>
+                    <b>
+                      {parte.pct.toLocaleString('es-AR', {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                      %
+                    </b>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>
