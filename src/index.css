@@ -239,7 +239,7 @@ select {
 }
 
 .sheet {
-  width: min(100%, 210mm);
+  width: min(calc(100% - 22rem), 210mm);
   min-height: 297mm;
   display: flex;
   flex-direction: column;
@@ -248,7 +248,7 @@ select {
   box-shadow: var(--shadow);
   padding: 0.45rem;
   border: 1px solid #999;
-  margin-right: 19rem;
+  margin-right: 22rem;
   overflow: visible;
 }
 
@@ -449,6 +449,12 @@ select {
 }
 
 .burbuja {
+  --bub: #fff;
+  --bub-fg: #09090b;
+  --bub-muted: #71717a;
+  --bub-accent: #f4f4f5;
+  --bub-border: #e4e4e7;
+  --bub-ring: #a1a1aa;
   position: absolute;
   z-index: 2;
   left: calc(0.45rem + 1px + 0.55rem);
@@ -456,41 +462,53 @@ select {
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  gap: 0.12rem;
-  padding: 0.28rem;
-  background: #fff;
-  color: #102a43;
-  border: 1.5px dashed #102a43;
-  border-radius: 0.85rem;
-  box-shadow: 0 8px 18px rgba(16, 42, 67, 0.14);
-  font-size: 0.72rem;
-  line-height: 1.2;
+  gap: 1px;
+  padding: 1px;
+  background: var(--bub);
+  color: var(--bub-fg);
+  border: 1px solid var(--bub-border);
+  border-radius: 6px;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.05),
+    0 1px 3px rgb(0 0 0 / 0.06);
+  font-family: Geist, ui-sans-serif, system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
   white-space: nowrap;
 }
 
+.burbuja select,
+.burbuja .btn-mini,
+.burbuja-agregar .btn-agregar {
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
 .burbuja select {
+  height: 16px;
   width: auto;
-  max-width: 11.5rem;
-  color: inherit;
+  flex: 0 0 auto;
+  field-sizing: content;
+  color: var(--bub-fg);
   background-color: transparent;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23102a43' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.42rem center;
-  background-size: 0.55rem 0.34rem;
+  background-position: right 3px center;
+  background-size: 8px 8px;
   appearance: none;
   border: 0;
-  border-radius: 0.45rem;
-  padding: 0.16rem 1.15rem 0.16rem 0.32rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  line-height: 1.2;
+  border-radius: 4px;
+  padding: 0 14px 0 5px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
   cursor: pointer;
 }
 
 .burbuja select:hover {
-  background-color: #102a43;
-  color: #fff;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-color: var(--bub-accent);
 }
 
 .burbuja .btn-mini {
@@ -499,14 +517,14 @@ select {
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  width: 1.05rem;
-  height: 1.05rem;
-  margin-right: 0.16rem;
+  width: 16px;
+  height: 16px;
+  margin: 0;
   padding: 0;
-  border-radius: 50%;
-  border: 1px solid currentColor;
+  border: 0;
+  border-radius: 4px;
   background: transparent;
-  color: inherit;
+  color: var(--bub-muted);
   font-size: 0;
   cursor: pointer;
 }
@@ -518,7 +536,7 @@ select {
   left: 50%;
   top: 50%;
   width: 7px;
-  height: 1.5px;
+  height: 1.25px;
   background: currentColor;
   border-radius: 1px;
 }
@@ -532,50 +550,57 @@ select {
 }
 
 .burbuja .btn-mini:hover {
-  background: #102a43;
-  color: #fff;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.burbuja :focus-visible {
+  outline: 2px solid var(--bub-ring);
+  outline-offset: 1px;
 }
 
 .burbuja-agregar {
   flex-direction: column;
   align-items: stretch;
+  gap: 1px;
+  padding: 2px;
 }
 
 .burbuja-agregar .btn-agregar {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 5px;
+  height: 18px;
   margin: 0;
-  padding: 0.16rem 0.32rem;
+  padding: 0 6px;
   border: 0;
-  border-radius: 0.45rem;
+  border-radius: 4px;
   background: transparent;
-  color: inherit;
-  font-size: 0.72rem;
-  font-weight: 700;
-  line-height: 1.2;
+  color: var(--bub-fg);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
   text-align: left;
   cursor: pointer;
 }
 
 .burbuja-agregar .btn-agregar::before {
-  content: '+';
-  display: inline-flex;
+  content: '';
+  display: block;
   flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 1.05rem;
-  height: 1.05rem;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  font-size: 0.82rem;
-  font-weight: 700;
-  line-height: 1;
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(currentColor, currentColor) center / 1.25px 8px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 8px 1.25px no-repeat;
+  color: var(--bub-muted);
 }
 
 .burbuja-agregar .btn-agregar:hover {
-  background: #102a43;
-  color: #fff;
+  background: var(--bub-accent);
+  color: var(--bub-fg);
 }
 
 .totales-wrap {
@@ -727,28 +752,40 @@ select {
 
 .burbuja.burbuja-torta {
   left: calc(100% + 1.65rem);
-  gap: 0.38rem;
-  padding: 0.28rem 0.5rem 0.28rem 0.38rem;
-  font-weight: 700;
+  gap: 6px;
+  height: 20px;
+  padding: 0 6px 0 5px;
+  font-weight: 500;
   cursor: pointer;
   user-select: none;
 }
 
 .burbuja.burbuja-torta input {
-  width: 0.9rem;
-  height: 0.9rem;
+  appearance: none;
+  width: 12px;
+  height: 12px;
   margin: 0;
-  accent-color: #102a43;
+  flex: none;
+  border: 1px solid #d4d4d8;
+  border-radius: 3px;
+  background-color: #fff;
+  background-image: none;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
   cursor: pointer;
 }
 
-.burbuja.burbuja-torta:hover {
-  background: #102a43;
-  color: #fff;
+.burbuja.burbuja-torta input:checked {
+  border-color: #18181b;
+  background-color: #18181b;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 9px 9px;
+  box-shadow: none;
 }
 
-.burbuja.burbuja-torta:hover input {
-  accent-color: #fff;
+.burbuja.burbuja-torta:hover input:not(:checked) {
+  border-color: var(--bub-ring);
 }
 
 .leyenda {
@@ -834,6 +871,11 @@ select {
 }
 
 @media screen and (max-width: 900px) {
+  .sheet {
+    width: min(100%, 210mm);
+    margin-right: 19rem;
+  }
+
   .totales {
     grid-template-columns: 1fr 1fr;
   }
@@ -865,7 +907,10 @@ select {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sidebar .btn {
+  .sidebar .btn,
+  .burbuja select,
+  .burbuja .btn-mini,
+  .burbuja-agregar .btn-agregar {
     transition: none;
   }
 }
