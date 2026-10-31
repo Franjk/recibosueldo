@@ -50,6 +50,24 @@ function BurbujaLinea({ children }: { children: ReactNode }) {
   )
 }
 
+function BurbujaAgregar({ children }: { children: ReactNode }) {
+  return <div className="burbuja burbuja-agregar">{children}</div>
+}
+
+function BotonAgregar({
+  children,
+  onClick,
+}: {
+  children: string
+  onClick: () => void
+}) {
+  return (
+    <button type="button" className="btn-agregar" onClick={onClick}>
+      {children}
+    </button>
+  )
+}
+
 function ControlesContribucion({
   linea,
   onChange,
@@ -267,7 +285,6 @@ export function ReciboSheet() {
             <td className="lab">Categoría Laboral</td>
             <td className="lab">Fec. Ingreso</td>
             <td className="lab">Lugar de Pago</td>
-            <td className="lab">Fecha Pago Aportes</td>
           </tr>
           <tr>
             <td>
@@ -298,6 +315,32 @@ export function ReciboSheet() {
                 ariaLabel="Lugar de pago"
                 value={recibo.lugarPago}
                 onChange={(lugarPago) => recibo.patch({ lugarPago })}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="grid-head">
+        <tbody>
+          <tr>
+            <td className="lab">Banco del depósito</td>
+            <td className="lab">Período del depósito</td>
+            <td className="lab">Fecha Pago Aportes</td>
+          </tr>
+          <tr>
+            <td>
+              <CellInput
+                ariaLabel="Banco del depósito de aportes"
+                value={recibo.bancoDeposito ?? ''}
+                onChange={(bancoDeposito) => recibo.patch({ bancoDeposito })}
+              />
+            </td>
+            <td>
+              <CellInput
+                ariaLabel="Período del depósito de aportes"
+                value={recibo.periodoDeposito ?? ''}
+                onChange={(periodoDeposito) => recibo.patch({ periodoDeposito })}
               />
             </td>
             <td>
@@ -344,16 +387,16 @@ export function ReciboSheet() {
           <tr className="subtotal">
             <td colSpan={3}>SUBTOTAL CONTRIBUCIONES EMPLEADOR</td>
             <td className="mono right">{dinero(tot.contribuciones)}</td>
-            <td className="ancla-burbuja no-print" />
+            <td className="ancla-burbuja no-print">
+              <BurbujaAgregar>
+                <BotonAgregar onClick={() => recibo.addLinea('contribucion')}>
+                  Agregar contribución
+                </BotonAgregar>
+              </BurbujaAgregar>
+            </td>
           </tr>
         </tbody>
       </table>
-
-      <div className="add-row no-print">
-        <button type="button" className="btn secondary" onClick={() => recibo.addLinea('contribucion')}>
-          Agregar contribución
-        </button>
-      </div>
 
       <div className="banner soft">
         <strong>Sueldo Bruto</strong>
@@ -388,43 +431,44 @@ export function ReciboSheet() {
         </tbody>
       </table>
 
-      <div className="add-row no-print">
-        <button type="button" className="btn secondary" onClick={() => recibo.addLinea('remunerativo')}>
-          Agregar remunerativo
-        </button>
-        <button type="button" className="btn secondary" onClick={() => recibo.addLinea('no_remunerativo')}>
-          Agregar no remunerativo
-        </button>
-        <button type="button" className="btn secondary" onClick={() => recibo.addLinea('deduccion')}>
-          Agregar descuento
-        </button>
-      </div>
-
-      <div className="totales">
-        <div>
-          <span>Remunerativo:</span>
-          <b className="mono">{dinero(tot.remunerativo)}</b>
+      <div className="totales-wrap">
+        <div className="totales">
+          <div>
+            <span>Remunerativo:</span>
+            <b className="mono">{dinero(tot.remunerativo)}</b>
+          </div>
+          <div>
+            <span>No Remunerativo:</span>
+            <b className="mono">{dinero(tot.noRemunerativo)}</b>
+          </div>
+          <div>
+            <span>Descuentos:</span>
+            <b className="mono">{dinero(tot.deducciones)}</b>
+          </div>
+          <div>
+            <span>Fecha de Pago:</span>
+            <CellInput
+              className="center"
+              ariaLabel="Fecha de pago"
+              value={recibo.fechaPago}
+              onChange={(fechaPago) => recibo.patch({ fechaPago })}
+            />
+          </div>
+          <div className="neto">
+            <span>SUELDO NETO $</span>
+            <b className="mono">{formatNumero(tot.neto)}</b>
+          </div>
         </div>
-        <div>
-          <span>No Remunerativo:</span>
-          <b className="mono">{dinero(tot.noRemunerativo)}</b>
-        </div>
-        <div>
-          <span>Descuentos:</span>
-          <b className="mono">{dinero(tot.deducciones)}</b>
-        </div>
-        <div>
-          <span>Fecha de Pago:</span>
-          <CellInput
-            className="center"
-            ariaLabel="Fecha de pago"
-            value={recibo.fechaPago}
-            onChange={(fechaPago) => recibo.patch({ fechaPago })}
-          />
-        </div>
-        <div className="neto">
-          <span>SUELDO NETO $</span>
-          <b className="mono">{formatNumero(tot.neto)}</b>
+        <div className="ancla-agregar no-print">
+          <BurbujaAgregar>
+            <BotonAgregar onClick={() => recibo.addLinea('remunerativo')}>
+              Agregar remunerativo
+            </BotonAgregar>
+            <BotonAgregar onClick={() => recibo.addLinea('no_remunerativo')}>
+              Agregar no remunerativo
+            </BotonAgregar>
+            <BotonAgregar onClick={() => recibo.addLinea('deduccion')}>Agregar descuento</BotonAgregar>
+          </BurbujaAgregar>
         </div>
       </div>
 
@@ -444,6 +488,7 @@ export function ReciboSheet() {
                 ['obra_social', 'Total Obra Social:'],
                 ['inssjp', 'Total Costo INSSJP:'],
                 ['art', 'Total Costo ART:'],
+                ['camaras', 'Total Cámaras o entidades empresariales:'],
                 ['scvo', 'Total Costo SCVO:'],
                 ['otros', 'Total Otros Rubros:'],
               ] as const

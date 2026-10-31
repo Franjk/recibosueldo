@@ -7,6 +7,7 @@ export const RUBROS = [
   'obra_social',
   'inssjp',
   'art',
+  'camaras',
   'scvo',
   'otros',
 ] as const
@@ -18,6 +19,7 @@ export const RUBRO_LABEL: Record<Rubro, string> = {
   obra_social: 'Obra Social',
   inssjp: 'INSSJP',
   art: 'ART',
+  camaras: 'Cámaras empresariales',
   scvo: 'SCVO',
   otros: 'Otros Rubros',
 }
@@ -52,6 +54,8 @@ export interface Recibo {
   categoria: string
   fechaIngreso: string
   lugarPago: string
+  bancoDeposito: string
+  periodoDeposito: string
   fechaPagoAportes: string
   fechaPago: string
   lineas: Linea[]

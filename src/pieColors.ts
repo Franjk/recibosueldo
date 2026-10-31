@@ -7,6 +7,7 @@ export const COLORES_TORTA: Record<'neto' | Rubro, string> = {
   obra_social: '#d9480f',
   inssjp: '#e67700',
   art: '#c92a2a',
+  camaras: '#0b7285',
   scvo: '#f59f00',
   otros: '#868e96',
 }

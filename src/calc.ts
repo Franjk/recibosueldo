@@ -28,6 +28,8 @@ export function reciboVacio(): Recibo {
     categoria: '',
     fechaIngreso: '',
     lugarPago: '',
+    bancoDeposito: '',
+    periodoDeposito: '',
     fechaPagoAportes: '',
     fechaPago: '',
     lineas: [nuevaLinea('contribucion'), nuevaLinea('remunerativo')],

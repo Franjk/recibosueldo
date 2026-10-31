@@ -41,6 +41,24 @@ describe('letras', () => {
   })
 })
 
+describe('cámaras empresariales', () => {
+  it('suma la contribución patronal en su rubro', () => {
+    const tot = totales([
+      linea({
+        descripcion: 'Aporte cámara',
+        tipo: 'contribucion',
+        rubro: 'camaras',
+        montoCentavos: 1_500,
+      }),
+    ])
+    expect(tot.porRubro.camaras).toEqual({
+      total: 1_500,
+      empleador: 1_500,
+      trabajador: 0,
+    })
+  })
+})
+
 describe('recibo de octubre', () => {
   const lineas: Linea[] = [
     linea({
@@ -177,6 +195,11 @@ describe('recibo de octubre', () => {
     expect(tot.porRubro.art).toEqual({
       total: 6_132_911,
       empleador: 6_132_911,
+      trabajador: 0,
+    })
+    expect(tot.porRubro.camaras).toEqual({
+      total: 0,
+      empleador: 0,
       trabajador: 0,
     })
     expect(tot.porRubro.scvo).toEqual({

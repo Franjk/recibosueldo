@@ -324,8 +324,8 @@ select {
 }
 
 .burbuja select {
-  width: 7.5rem;
-  max-width: 7.5rem;
+  width: 9.6rem;
+  max-width: 9.6rem;
   color: #102a43;
   background: #f4f7f8;
   border: 0;
@@ -373,19 +373,73 @@ select {
   color: #102a43;
 }
 
-.add-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.35rem 0 0.55rem;
-}
-
-.add-row .btn {
-  font-size: 0.75rem;
-  padding: 0.3rem 0.55rem;
+.burbuja-agregar {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.12rem;
+  padding: 0.28rem;
   background: #fff;
   color: #102a43;
-  border-color: #102a43;
+  border: 1.5px dashed #102a43;
+  box-shadow: 0 8px 18px rgba(16, 42, 67, 0.14);
+}
+
+.burbuja-agregar::before {
+  display: none;
+}
+
+.burbuja-agregar .btn-agregar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.16rem 0.32rem;
+  border: 0;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+}
+
+.burbuja-agregar .btn-agregar::before {
+  content: '+';
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.burbuja-agregar .btn-agregar:hover {
+  background: #102a43;
+  color: #fff;
+}
+
+.totales-wrap {
+  position: relative;
+}
+
+.ancla-agregar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+}
+
+.ancla-agregar .burbuja-agregar {
+  top: 0;
+  transform: none;
 }
 
 .totales {

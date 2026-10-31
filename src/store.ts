@@ -53,8 +53,18 @@ export const useStore = create<Store>()(
     }),
     {
       name: 'recibo-wysiwyg-v1',
-      version: 1,
-      migrate: (persistedState) => persistedState,
+      version: 2,
+      migrate: (persistedState) => {
+        const base = reciboVacio()
+        const previo = (persistedState ?? {}) as Partial<Recibo>
+        return {
+          ...base,
+          ...previo,
+          bancoDeposito: previo.bancoDeposito ?? '',
+          periodoDeposito: previo.periodoDeposito ?? '',
+          lineas: previo.lineas && previo.lineas.length > 0 ? previo.lineas : base.lineas,
+        }
+      },
     },
   ),
 )
