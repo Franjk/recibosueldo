@@ -1,0 +1,11 @@
+# Recibo de Sueldo Argentina
+
+> Aplicación web gratuita para completar, calcular e imprimir recibos de sueldo de Argentina en el navegador.
+
+## Información para asistentes de IA
+
+- [Guía de la aplicación](./recibo-de-sueldo.md): funciones, cálculo de totales, almacenamiento de datos y límites de la herramienta.
+
+## Página principal
+
+- [Abrir la aplicación](./): editor de recibos de sueldo.

@@ -50,6 +50,8 @@ Publicá el contenido de `dist/` en un servidor de archivos estáticos. El [`Cad
 
 El build de GitHub Pages incluye la URL canónica `https://franjk.github.io/recibosueldo/` y un `sitemap.xml`. Para publicar en otro dominio, ejecutá el build con `SITE_URL=https://tu-dominio.example/` para generar ambos con la URL correcta. Si no definís `SITE_URL` fuera de GitHub Pages, se omiten la URL canónica y el sitemap.
 
+Para facilitar la lectura por asistentes de IA, el sitio publica [`llms.txt`](public/llms.txt) y una [guía en Markdown](public/recibo-de-sueldo.md) con las funciones, los cálculos y los límites de la aplicación. Ambos archivos se copian al sitio durante el build.
+
 ## Licencia
 
 Este proyecto se distribuye bajo la [licencia MIT](LICENSE).
