@@ -6,7 +6,7 @@ import { useStore } from '../store.ts'
 import type { Linea, Rubro, TipoLinea } from '../types.ts'
 import { RUBRO_LABEL, RUBROS, TIPO_HABER_LABEL } from '../types.ts'
 import { CellInput, MoneyCell } from './Fields.tsx'
-import { DefsPatrones, MuestraParte, PieChart } from './PieChart.tsx'
+import { DefsPatrones, PieChart } from './PieChart.tsx'
 
 function dinero(centavos: number): string {
   return `$ ${formatNumero(centavos)}`
@@ -510,25 +510,6 @@ export function ReciboSheet() {
             <div className="torta-pie-wrap">
               <PieChart partes={tot.partesTorta} patrones={patrones} />
             </div>
-            <ul className="leyenda">
-              {tot.partesTorta
-                .filter((parte) => parte.valor > 0)
-                .sort((a, b) => b.pct - a.pct)
-                .map((parte) => (
-                  <li key={parte.key}>
-                    <Fondo color="#fff" />
-                    <MuestraParte clave={parte.key} patrones={patrones} />
-                    <span>{parte.label}</span>
-                    <span>
-                      {parte.pct.toLocaleString('es-AR', {
-                        maximumFractionDigits: 2,
-                        minimumFractionDigits: 2,
-                      })}
-                      %
-                    </span>
-                  </li>
-                ))}
-            </ul>
           </div>
         </div>
         <div className="ancla-torta no-print">

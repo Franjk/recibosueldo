@@ -691,8 +691,8 @@ select {
 
 .composicion-body {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(17.5rem, 0.92fr);
-  gap: 0.85rem 1rem;
+  grid-template-columns: minmax(0, 1.1fr) minmax(14rem, 1fr);
+  gap: 0.85rem 0.75rem;
   align-items: start;
   padding: 0.15rem 0.55rem 0.65rem;
 }
@@ -734,15 +734,15 @@ select {
 }
 
 .torta-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.7rem;
+  position: relative;
+  width: 100%;
+  min-width: 0;
 }
 
 .torta-pie-wrap {
-  position: relative;
-  width: 9.5rem;
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
 }
 
 .patrones-defs {
@@ -806,39 +806,6 @@ select {
   border-color: var(--bub-ring);
 }
 
-.leyenda {
-  list-style: none;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.35rem;
-  font-size: 0.72rem;
-}
-
-.leyenda li {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.32rem;
-  margin: 0;
-  padding: 0.14rem 0.42rem 0.14rem 0.16rem;
-  overflow: hidden;
-  background: #fff;
-  color: #111;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  line-height: 1.15;
-  break-inside: avoid;
-}
-
-.leyenda li > span:last-child {
-  font-variant-numeric: tabular-nums;
-}
-
 .fondo {
   position: absolute;
   inset: 0;
@@ -851,19 +818,9 @@ select {
 
 .banner > :not(.fondo),
 .totales .neto > :not(.fondo),
-.composicion-titulo > :not(.fondo),
-.leyenda li > :not(.fondo) {
+.composicion-titulo > :not(.fondo) {
   position: relative;
   z-index: 1;
-}
-
-.muestra {
-  width: 0.85rem;
-  height: 0.85rem;
-  flex: none;
-  border: 1px solid #222;
-  border-radius: 50%;
-  overflow: hidden;
 }
 
 .firmas {
