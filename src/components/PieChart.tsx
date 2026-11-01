@@ -138,6 +138,8 @@ const ALTO_LINEA = 13.5
 const ANCHO_MAX = 132
 const MARGEN_TEXTO = 14
 const PAD = 4
+// Reservar ambos laterales aunque no haya etiquetas mantiene la escala del círculo.
+const ANCHO_GRAFICO = 2 * (RADIO + MARGEN_TEXTO + ANCHO_MAX + PAD + 4)
 
 type ParteTorta = { key: ClaveTorta; valor: number; pct: number; label: string }
 type Lado = 'left' | 'right'
@@ -296,8 +298,8 @@ export function PieChart({ partes, patrones }: { partes: ParteTorta[]; patrones:
 
   if (visibles.length === 0) {
     return (
-      <svg className="pie" viewBox="0 0 160 160" aria-hidden="true">
-        <circle cx="80" cy="80" r={r} fill="#dee2e6" />
+      <svg className="pie" viewBox={`0 0 ${ANCHO_GRAFICO} ${2 * (r + PAD)}`} aria-hidden="true">
+        <circle cx={ANCHO_GRAFICO / 2} cy={r + PAD} r={r} fill="#dee2e6" />
       </svg>
     )
   }
@@ -340,25 +342,19 @@ export function PieChart({ partes, patrones }: { partes: ParteTorta[]; patrones:
 
   const techoY = -(r + MARGEN_TEXTO + techo.alto / 2)
   const fondoY = fondo ? r + MARGEN_TEXTO + fondo.alto / 2 : 0
-  let minX = Math.min(-r, -techo.ancho / 2, fondo ? -fondo.ancho / 2 : 0)
-  let maxX = Math.max(r, techo.ancho / 2, fondo ? fondo.ancho / 2 : 0)
   let minY = Math.min(-r, techoY - techo.alto / 2)
   let maxY = Math.max(r, fondo ? fondoY + fondo.alto / 2 : r)
   for (const item of grupos.left) {
-    minX = Math.min(minX, item.x - item.ancho - 4)
-    maxX = Math.max(maxX, item.x)
     minY = Math.min(minY, item.y - item.alto / 2)
     maxY = Math.max(maxY, item.y + item.alto / 2)
   }
   for (const item of grupos.right) {
-    minX = Math.min(minX, item.x)
-    maxX = Math.max(maxX, item.x + item.ancho + 4)
     minY = Math.min(minY, item.y - item.alto / 2)
     maxY = Math.max(maxY, item.y + item.alto / 2)
   }
-  const cx = PAD - minX
+  const cx = ANCHO_GRAFICO / 2
   const cy = PAD - minY
-  const width = maxX - minX + PAD * 2
+  const width = ANCHO_GRAFICO
   const height = maxY - minY + PAD * 2
 
   const aria = medidas.map((slice) => `${slice.label}: ${formatoPct(slice.pct)}`).join(', ')

@@ -803,6 +803,12 @@ html.reordenando * {
 
 .torta-box {
   position: relative;
+  display: grid;
+  align-items: safe center;
+  align-self: stretch;
+  /* La tabla define la altura de la fila, incluso con muchas etiquetas. */
+  contain: size;
+  overflow: auto;
   width: 100%;
   min-width: 0;
 }
@@ -948,6 +954,10 @@ html.reordenando * {
 @container composicion (max-width: 40rem) {
   .composicion-body {
     grid-template-columns: 1fr;
+  }
+
+  .torta-box {
+    contain: none;
   }
 }
 
