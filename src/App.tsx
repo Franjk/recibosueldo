@@ -1,6 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react'
 import { ReciboSheet } from './components/ReciboSheet.tsx'
-import { nombreArchivoRecibo, parsearRecibo, serializarRecibo } from './io.ts'
+import { guardarReciboLocal, nombreArchivoRecibo, parsearRecibo, serializarRecibo } from './io.ts'
 import { useReciboListo, useStore } from './store.ts'
 
 export default function App() {
@@ -11,9 +11,12 @@ export default function App() {
   const [error, setError] = useState<string | null>(null)
   const [generacion, setGeneracion] = useState(0)
 
-  function exportar() {
+  function guardar() {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
     const recibo = useStore.getState()
-    const blob = new Blob([serializarRecibo(recibo)], { type: 'application/json' })
+    const texto = serializarRecibo(recibo)
+    guardarReciboLocal(recibo)
+    const blob = new Blob([texto], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const enlace = document.createElement('a')
     enlace.href = url
@@ -64,13 +67,13 @@ export default function App() {
         <div className="sidebar-group">
           <p className="sidebar-label">Archivo</p>
           <div className="actions">
-            <button type="button" className="btn secondary" onClick={exportar}>
+            <button type="button" className="btn secondary" onClick={guardar}>
               <Icono>
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" x2="12" y1="15" y2="3" />
               </Icono>
-              Exportar datos
+              Guardar
             </button>
             <button type="button" className="btn secondary" onClick={() => archivo.current?.click()}>
               <Icono>
@@ -78,7 +81,7 @@ export default function App() {
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" x2="12" y1="3" y2="15" />
               </Icono>
-              Importar datos
+              Cargar
             </button>
             <input
               ref={archivo}

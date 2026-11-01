@@ -1,6 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { reciboVacio } from './calc.ts'
-import { nombreArchivoRecibo, parsearRecibo, serializarRecibo } from './io.ts'
+import {
+  CLAVE_RECIBO_LOCAL,
+  guardarReciboLocal,
+  leerReciboLocal,
+  nombreArchivoRecibo,
+  parsearRecibo,
+  serializarRecibo,
+} from './io.ts'
 import type { Recibo } from './types.ts'
 
 function reciboEjemplo(): Recibo {
@@ -37,6 +44,23 @@ describe('json del recibo', () => {
   it('vuelve a leer lo que exporta', () => {
     const recibo = reciboEjemplo()
     expect(parsearRecibo(serializarRecibo(recibo))).toEqual(recibo)
+  })
+
+  it('guarda en el navegador el mismo json que se descarga', () => {
+    const datos = new Map<string, string>()
+    vi.stubGlobal('localStorage', {
+      getItem: (clave: string) => datos.get(clave) ?? null,
+      setItem: (clave: string, valor: string) => {
+        datos.set(clave, valor)
+      },
+      removeItem: (clave: string) => {
+        datos.delete(clave)
+      },
+    })
+    const recibo = reciboEjemplo()
+    guardarReciboLocal(recibo)
+    expect(datos.get(CLAVE_RECIBO_LOCAL)).toBe(serializarRecibo(recibo))
+    expect(leerReciboLocal()).toEqual(recibo)
   })
 
   it('arma el nombre del archivo con el empleado y el período', () => {
@@ -122,4 +146,8 @@ describe('json del recibo', () => {
       parsearRecibo(JSON.stringify({ lineas: [{ tipo: 'remunerativo', montoCentavos: '10' }] })),
     ).toThrow('La línea 1: el monto tiene que ser un número en centavos.')
   })
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
 })

@@ -4,6 +4,7 @@ import { RUBROS, TIPOS_LINEA } from './types.ts'
 
 export const FORMATO_RECIBO = 'recibo-haberes'
 export const VERSION_RECIBO = 1
+export const CLAVE_RECIBO_LOCAL = 'recibo-haberes-guardado'
 
 const CAMPOS_TEXTO = [
   'empresa',
@@ -73,6 +74,24 @@ export function datosRecibo(recibo: Recibo): Recibo {
       baseCentavos: linea.baseCentavos,
       montoCentavos: linea.montoCentavos,
     })),
+  }
+}
+
+export function guardarReciboLocal(recibo: Recibo): void {
+  try {
+    localStorage.setItem(CLAVE_RECIBO_LOCAL, serializarRecibo(recibo))
+  } catch {
+    // Si el navegador rechaza el almacenamiento, el archivo descargado sigue siendo la copia.
+  }
+}
+
+export function leerReciboLocal(): Recibo | null {
+  try {
+    const texto = localStorage.getItem(CLAVE_RECIBO_LOCAL)
+    if (!texto) return null
+    return parsearRecibo(texto)
+  } catch {
+    return null
   }
 }
 

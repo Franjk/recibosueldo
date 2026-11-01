@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { nuevaLinea, reciboVacio, rubroDeLinea } from './calc.ts'
+import { guardarReciboLocal, leerReciboLocal } from './io.ts'
 import type { Linea, Recibo, TipoLinea } from './types.ts'
 
 interface Acciones {
@@ -14,6 +15,8 @@ interface Acciones {
 }
 
 type Store = Recibo & Acciones
+
+const NOMBRE_PERSISTENCIA = 'recibo-wysiwyg-v1'
 
 export const useStore = create<Store>()(
   persist(
@@ -65,7 +68,7 @@ export const useStore = create<Store>()(
         }),
     }),
     {
-      name: 'recibo-wysiwyg-v1',
+      name: NOMBRE_PERSISTENCIA,
       version: 3,
       migrate: (persistedState) => {
         const base = reciboVacio()
@@ -85,6 +88,31 @@ export const useStore = create<Store>()(
     },
   ),
 )
+
+let persistirCopiaLocal = false
+
+useStore.subscribe(() => {
+  if (!persistirCopiaLocal) return
+  guardarReciboLocal(useStore.getState())
+})
+
+function restaurarCopiaLocal() {
+  if (persistirCopiaLocal) return
+  let crudo: string | null = null
+  try {
+    crudo = localStorage.getItem(NOMBRE_PERSISTENCIA)
+  } catch {
+    crudo = null
+  }
+  if (!crudo) {
+    const guardado = leerReciboLocal()
+    if (guardado) useStore.getState().cargar(guardado)
+  }
+  persistirCopiaLocal = true
+}
+
+useStore.persist.onFinishHydration(restaurarCopiaLocal)
+if (useStore.persist.hasHydrated()) restaurarCopiaLocal()
 
 export function useReciboListo(): boolean {
   return useSyncExternalStore(
