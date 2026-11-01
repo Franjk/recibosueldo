@@ -48,6 +48,8 @@ npm run build
 
 Publicá el contenido de `dist/` en un servidor de archivos estáticos. El [`Caddyfile`](Caddyfile) de la raíz es un ejemplo: reemplazá el dominio y ajustá la ruta del directorio antes de usarlo.
 
+El build de GitHub Pages incluye la URL canónica `https://franjk.github.io/recibosueldo/` y un `sitemap.xml`. Para publicar en otro dominio, ejecutá el build con `SITE_URL=https://tu-dominio.example/` para generar ambos con la URL correcta. Si no definís `SITE_URL` fuera de GitHub Pages, se omiten la URL canónica y el sitemap.
+
 ## Licencia
 
 Este proyecto se distribuye bajo la [licencia MIT](LICENSE).

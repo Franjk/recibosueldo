@@ -98,6 +98,9 @@ export default function App() {
           </span>
           <h1>Recibo de Sueldo Argentina</h1>
         </div>
+        <p className="sidebar-description">
+          Completá haberes, descuentos y contribuciones, revisá los totales e imprimí o guardá el recibo en PDF. Tus datos se conservan en este navegador.
+        </p>
         <div className="sidebar-group">
           <p className="sidebar-label">Archivo</p>
           <div className="actions">

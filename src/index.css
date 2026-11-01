@@ -113,6 +113,13 @@ select {
   text-wrap: balance;
 }
 
+.sidebar-description {
+  padding: 4px 8px 12px;
+  color: var(--sb-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .sidebar-label {
   margin: 8px 8px 4px;
   padding: 0 8px;

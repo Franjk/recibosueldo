@@ -1,20 +1,45 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-AR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fafafa" />
+    <meta name="description" content="Creá recibos de sueldo de Argentina en el navegador. Completá haberes, descuentos y contribuciones, revisá los totales e imprimí o guardá el recibo en PDF." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:title" content="Recibo de Sueldo Argentina | Crear e imprimir recibos" />
+    <meta property="og:description" content="Completá recibos de sueldo, calculá totales e imprimí o guardá el resultado en PDF desde tu navegador." />
+    <meta name="twitter:card" content="summary" />
+    <!-- seo:url -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Recibo de Sueldo Argentina",
+        "description": "Aplicación web para completar recibos de sueldo de Argentina, revisar haberes y descuentos e imprimirlos o guardarlos en PDF.",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web",
+        "inLanguage": "es-AR",
+        "isAccessibleForFree": true
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <title>Recibo de Sueldo Argentina</title>
+    <title>Recibo de Sueldo Argentina | Crear e imprimir recibos</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main>
+        <h1>Recibo de Sueldo Argentina</h1>
+        <p>Creá recibos de sueldo de Argentina en tu navegador. Completá los datos del empleador y del empleado, cargá haberes, descuentos y contribuciones, y revisá los totales.</p>
+        <p>Podés imprimir el recibo o guardarlo en PDF. Los datos se conservan en el almacenamiento local de tu navegador.</p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
