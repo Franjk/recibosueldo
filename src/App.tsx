@@ -3,6 +3,9 @@ import { ReciboSheet } from './components/ReciboSheet.tsx'
 import { guardarReciboLocal, nombreArchivoRecibo, parsearRecibo, serializarRecibo } from './io.ts'
 import { useReciboListo, useStore } from './store.ts'
 
+// Acceso pausado hasta retomar los ajustes de la exportación.
+const EXPORTACION_EXCEL_HABILITADA = false
+
 export default function App() {
   const listo = useReciboListo()
   const vaciar = useStore((estado) => estado.vaciar)
@@ -10,6 +13,37 @@ export default function App() {
   const archivo = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string | null>(null)
   const [generacion, setGeneracion] = useState(0)
+  const [exportando, setExportando] = useState(false)
+
+  async function exportarExcel() {
+    if (exportando) return
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+    setExportando(true)
+    setError(null)
+    try {
+      const [{ generarExcel, nombreArchivoExcel }, { capturarImpresion }] = await Promise.all([
+        import('./excel.ts'), import('./printLayout.ts'),
+      ])
+      const sheet = document.querySelector<HTMLElement>('.sheet')
+      if (!sheet) throw new Error('No se encontró el recibo.')
+      const recibo = useStore.getState()
+      const impresion = await capturarImpresion(sheet)
+      const contenido = await generarExcel(recibo, impresion)
+      const blob = new Blob([contenido], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = URL.createObjectURL(blob)
+      const enlace = document.createElement('a')
+      enlace.href = url
+      enlace.download = nombreArchivoExcel(recibo)
+      document.body.appendChild(enlace)
+      enlace.click()
+      enlace.remove()
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+    } catch {
+      setError('No se pudo exportar el recibo a Excel. Intentá nuevamente.')
+    } finally {
+      setExportando(false)
+    }
+  }
 
   function guardar() {
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
@@ -83,6 +117,13 @@ export default function App() {
               </Icono>
               Cargar
             </button>
+            {EXPORTACION_EXCEL_HABILITADA && <button type="button" className="btn secondary" onClick={() => void exportarExcel()} disabled={exportando} aria-busy={exportando}>
+              <Icono>
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18M3 15h18M9 3v18" />
+              </Icono>
+              {exportando ? 'Exportando…' : 'Exportar a Excel'}
+            </button>}
             <input
               ref={archivo}
               type="file"
