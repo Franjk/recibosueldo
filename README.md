@@ -1,6 +1,6 @@
-# Talonario
+# Recibo de Sueldo Argentina
 
-Talonario es una aplicación web para completar recibos de haberes en el navegador. Permite editar los datos del empleador y del empleado, cargar conceptos, consultar los totales y la composición salarial, e imprimir el recibo o guardarlo como PDF. Los datos se conservan en el almacenamiento local del navegador; la aplicación no usa un servidor de datos.
+Recibo de Sueldo Argentina es una aplicación web para completar recibos de haberes en el navegador. Permite editar los datos del empleador y del empleado, cargar conceptos, consultar los totales y la composición salarial, e imprimir el recibo o guardarlo como PDF. Los datos se conservan en el almacenamiento local del navegador; la aplicación no usa un servidor de datos.
 
 ## Usar la aplicación
 

@@ -105,14 +105,12 @@ select {
 
 .sidebar h1 {
   min-width: 0;
-  overflow: hidden;
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-wrap: balance;
 }
 
 .sidebar-label {

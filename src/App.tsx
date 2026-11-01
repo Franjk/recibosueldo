@@ -96,7 +96,7 @@ export default function App() {
               <path d="M16 17H8" />
             </Icono>
           </span>
-          <h1>Recibo de haberes</h1>
+          <h1>Recibo de Sueldo Argentina</h1>
         </div>
         <div className="sidebar-group">
           <p className="sidebar-label">Archivo</p>
