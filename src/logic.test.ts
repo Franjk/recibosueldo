@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { totales } from './calc.ts'
+import { reordenarLinea, totales } from './calc.ts'
 import { enLetrasPesos, numeroEnLetras } from './letras.ts'
 import { parsePesos, porcentaje } from './money.ts'
 import type { Linea } from './types.ts'
@@ -38,6 +38,42 @@ describe('letras', () => {
     expect(enLetrasPesos(299_340_400)).toBe(
       'Son pesos dos millones novecientos noventa y tres mil cuatrocientos cuatro con 00/100',
     )
+  })
+})
+
+describe('reordenar líneas', () => {
+  const lineas = [
+    linea({ descripcion: 'c1', tipo: 'contribucion', rubro: null, montoCentavos: 1 }),
+    linea({ descripcion: 'c2', tipo: 'contribucion', rubro: null, montoCentavos: 2 }),
+    linea({ descripcion: 'h1', tipo: 'remunerativo', rubro: null, montoCentavos: 3 }),
+    linea({ descripcion: 'h2', tipo: 'deduccion', rubro: 'obra_social', montoCentavos: 4 }),
+  ]
+
+  it('lleva un concepto antes de otra fila de la misma tabla', () => {
+    expect(reordenarLinea(lineas, 'c2', 'c1', 'antes').map((item) => item.id)).toEqual([
+      'c2',
+      'c1',
+      'h1',
+      'h2',
+    ])
+  })
+
+  it('lleva un concepto después de otra fila de la misma tabla', () => {
+    expect(reordenarLinea(lineas, 'h1', 'h2', 'despues').map((item) => item.id)).toEqual([
+      'c1',
+      'c2',
+      'h2',
+      'h1',
+    ])
+  })
+
+  it('no mezcla contribuciones con haberes', () => {
+    expect(reordenarLinea(lineas, 'c1', 'h1', 'antes')).toBe(lineas)
+  })
+
+  it('conserva el arreglo si el orden no cambia', () => {
+    expect(reordenarLinea(lineas, 'h2', 'h2', 'despues')).toBe(lineas)
+    expect(reordenarLinea(lineas, 'c1', 'c2', 'antes')).toBe(lineas)
   })
 })
 

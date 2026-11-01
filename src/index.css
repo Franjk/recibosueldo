@@ -480,10 +480,78 @@ select {
 
 .burbuja select,
 .burbuja .btn-mini,
+.burbuja .asa,
 .burbuja-agregar .btn-agregar {
   transition:
     background-color 120ms ease,
     color 120ms ease;
+}
+
+.lineas td.ancla-burbuja .burbuja:not(.burbuja-agregar) {
+  cursor: grab;
+}
+
+.burbuja .asa {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--bub-muted);
+  line-height: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.burbuja .asa svg {
+  display: block;
+  width: 10px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.burbuja .asa:hover {
+  background: var(--bub-accent);
+  color: var(--bub-fg);
+}
+
+.burbuja.arrastrando {
+  cursor: grabbing;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.06),
+    0 10px 24px rgb(0 0 0 / 0.18);
+}
+
+html.reordenando,
+html.reordenando * {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+.lineas tr.origen-arrastre > td:not(.ancla-burbuja) {
+  opacity: 0.4;
+}
+
+.lineas tr.soltar-antes > td:not(.ancla-burbuja),
+.lineas tr.soltar-despues > td:not(.ancla-burbuja) {
+  background-image: linear-gradient(#18181b, #18181b);
+  background-size: 100% 2px;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+}
+
+.lineas tr.soltar-antes > td:not(.ancla-burbuja) {
+  background-position: center top;
+}
+
+.lineas tr.soltar-despues > td:not(.ancla-burbuja) {
+  background-position: center bottom;
 }
 
 .burbuja select {
@@ -887,6 +955,7 @@ select {
   .sidebar .btn,
   .burbuja select,
   .burbuja .btn-mini,
+  .burbuja .asa,
   .burbuja-agregar .btn-agregar {
     transition: none;
   }

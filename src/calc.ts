@@ -111,3 +111,31 @@ export function filasTipo(lineas: Linea[], tipo: TipoLinea): Linea[] {
 export function filasHaberes(lineas: Linea[]): Linea[] {
   return lineas.filter((linea) => linea.tipo !== 'contribucion')
 }
+
+export type LugarLinea = 'antes' | 'despues'
+
+function mismaTabla(origen: Linea, destino: Linea): boolean {
+  return (origen.tipo === 'contribucion') === (destino.tipo === 'contribucion')
+}
+
+export function reordenarLinea(
+  lineas: Linea[],
+  id: string,
+  destinoId: string,
+  lugar: LugarLinea,
+): Linea[] {
+  if (id === destinoId) return lineas
+  const origen = lineas.find((linea) => linea.id === id)
+  const destino = lineas.find((linea) => linea.id === destinoId)
+  if (!origen || !destino || !mismaTabla(origen, destino)) return lineas
+
+  const resto = lineas.filter((linea) => linea.id !== id)
+  let indice = resto.findIndex((linea) => linea.id === destinoId)
+  if (indice < 0) return lineas
+  if (lugar === 'despues') indice += 1
+
+  const siguiente = [...resto]
+  siguiente.splice(indice, 0, origen)
+  const sinCambio = siguiente.every((linea, i) => linea === lineas[i])
+  return sinCambio ? lineas : siguiente
+}

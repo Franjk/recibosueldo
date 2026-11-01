@@ -1,5 +1,14 @@
-import { useState, type ReactNode } from 'react'
-import { filasHaberes, filasTipo, totales } from '../calc.ts'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from 'react'
+import { filasHaberes, filasTipo, totales, type LugarLinea } from '../calc.ts'
 import { enLetrasPesos } from '../letras.ts'
 import { formatNumero } from '../money.ts'
 import { useStore } from '../store.ts'
@@ -51,10 +60,244 @@ function RubroSelect({
   )
 }
 
-function BurbujaLinea({ children }: { children: ReactNode }) {
+type GrupoTabla = 'contribucion' | 'haberes'
+
+type IndicadorReorden = {
+  id: string
+  lugar: LugarLinea
+}
+
+type SesionReorden = {
+  id: string
+  grupo: GrupoTabla
+  pointerId: number
+  startX: number
+  startY: number
+  offsetX: number
+  offsetY: number
+  burbuja: HTMLDivElement
+  arrastrando: boolean
+}
+
+type ContextoReorden = {
+  arrastrandoId: string | null
+  indicador: IndicadorReorden | null
+  alPresionarBurbuja: (event: ReactPointerEvent<HTMLDivElement>, id: string, grupo: GrupoTabla) => void
+  alTeclaAsa: (event: ReactKeyboardEvent<HTMLButtonElement>, id: string, grupo: GrupoTabla) => void
+}
+
+const ReordenCtx = createContext<ContextoReorden | null>(null)
+
+function useReorden(): ContextoReorden {
+  const valor = useContext(ReordenCtx)
+  if (!valor) throw new Error('Reorden fuera de contexto')
+  return valor
+}
+
+function limpiarEstilosBurbuja(burbuja: HTMLDivElement) {
+  burbuja.style.position = ''
+  burbuja.style.left = ''
+  burbuja.style.top = ''
+  burbuja.style.transform = ''
+  burbuja.style.width = ''
+  burbuja.style.zIndex = ''
+  burbuja.style.pointerEvents = ''
+  burbuja.style.margin = ''
+}
+
+function filaBajoPuntero(x: number, y: number, grupo: GrupoTabla): IndicadorReorden | null {
+  const bajo = document.elementFromPoint(x, y)
+  const fila = bajo instanceof Element ? bajo.closest('tr[data-linea-id]') : null
+  if (!(fila instanceof HTMLTableRowElement) || fila.dataset.grupo !== grupo) return null
+  const id = fila.dataset.lineaId
+  if (!id) return null
+  const rect = fila.getBoundingClientRect()
+  const lugar: LugarLinea = y >= rect.top + rect.height / 2 ? 'despues' : 'antes'
+  return { id, lugar }
+}
+
+function ReordenProvider({ children }: { children: ReactNode }) {
+  const moverLinea = useStore((estado) => estado.moverLinea)
+  const [arrastrandoId, setArrastrandoId] = useState<string | null>(null)
+  const [indicador, setIndicador] = useState<IndicadorReorden | null>(null)
+  const sesion = useRef<SesionReorden | null>(null)
+  const indicadorRef = useRef<IndicadorReorden | null>(null)
+  const soltarOyentes = useRef<(() => void) | null>(null)
+
+  function publicarIndicador(siguiente: IndicadorReorden | null) {
+    const previo = indicadorRef.current
+    if (previo?.id === siguiente?.id && previo?.lugar === siguiente?.lugar) return
+    indicadorRef.current = siguiente
+    setIndicador(siguiente)
+  }
+
+  function finalizar(aplicar: boolean) {
+    const actual = sesion.current
+    if (!actual) return
+    const destino = indicadorRef.current
+    sesion.current = null
+    indicadorRef.current = null
+    soltarOyentes.current?.()
+    soltarOyentes.current = null
+    document.documentElement.classList.remove('reordenando')
+    limpiarEstilosBurbuja(actual.burbuja)
+    setArrastrandoId(null)
+    setIndicador(null)
+    if (aplicar && actual.arrastrando && destino) moverLinea(actual.id, destino.id, destino.lugar)
+  }
+
+  function alPresionarBurbuja(event: ReactPointerEvent<HTMLDivElement>, id: string, grupo: GrupoTabla) {
+    if (event.button !== 0 || sesion.current) return
+    const target = event.target
+    if (!(target instanceof Element) || target.closest('select, .btn-mini')) return
+    event.preventDefault()
+
+    const burbuja = event.currentTarget
+    const actual: SesionReorden = {
+      id,
+      grupo,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      offsetX: 0,
+      offsetY: 0,
+      burbuja,
+      arrastrando: false,
+    }
+    sesion.current = actual
+
+    const alMover = (ev: PointerEvent) => {
+      const vigente = sesion.current
+      if (!vigente || ev.pointerId !== vigente.pointerId) return
+      if (!vigente.arrastrando) {
+        const dx = ev.clientX - vigente.startX
+        const dy = ev.clientY - vigente.startY
+        if (dx * dx + dy * dy < 9) return
+        const rect = vigente.burbuja.getBoundingClientRect()
+        vigente.offsetX = ev.clientX - rect.left
+        vigente.offsetY = ev.clientY - rect.top
+        vigente.arrastrando = true
+        vigente.burbuja.style.position = 'fixed'
+        vigente.burbuja.style.margin = '0'
+        vigente.burbuja.style.transform = 'none'
+        vigente.burbuja.style.width = `${rect.width}px`
+        vigente.burbuja.style.zIndex = '30'
+        vigente.burbuja.style.pointerEvents = 'none'
+        document.documentElement.classList.add('reordenando')
+        setArrastrandoId(vigente.id)
+      }
+      ev.preventDefault()
+      vigente.burbuja.style.left = `${ev.clientX - vigente.offsetX}px`
+      vigente.burbuja.style.top = `${ev.clientY - vigente.offsetY}px`
+      publicarIndicador(filaBajoPuntero(ev.clientX, ev.clientY, vigente.grupo))
+    }
+
+    const alSoltar = (ev: PointerEvent) => {
+      const vigente = sesion.current
+      if (!vigente || ev.pointerId !== vigente.pointerId) return
+      finalizar(true)
+    }
+
+    const alCancelar = () => finalizar(false)
+    const alEscape = (ev: KeyboardEvent) => {
+      if (ev.key !== 'Escape') return
+      ev.preventDefault()
+      finalizar(false)
+    }
+
+    window.addEventListener('pointermove', alMover)
+    window.addEventListener('pointerup', alSoltar)
+    window.addEventListener('pointercancel', alCancelar)
+    window.addEventListener('keydown', alEscape)
+    window.addEventListener('blur', alCancelar)
+    soltarOyentes.current = () => {
+      window.removeEventListener('pointermove', alMover)
+      window.removeEventListener('pointerup', alSoltar)
+      window.removeEventListener('pointercancel', alCancelar)
+      window.removeEventListener('keydown', alEscape)
+      window.removeEventListener('blur', alCancelar)
+    }
+  }
+
+  function alTeclaAsa(event: ReactKeyboardEvent<HTMLButtonElement>, id: string, grupo: GrupoTabla) {
+    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
+    event.preventDefault()
+    const lineas = useStore.getState().lineas.filter((linea) =>
+      grupo === 'contribucion' ? linea.tipo === 'contribucion' : linea.tipo !== 'contribucion',
+    )
+    const index = lineas.findIndex((linea) => linea.id === id)
+    const vecino = lineas[index + (event.key === 'ArrowUp' ? -1 : 1)]
+    if (!vecino) return
+    moverLinea(id, vecino.id, event.key === 'ArrowUp' ? 'antes' : 'despues')
+  }
+
+  useEffect(() => {
+    return () => {
+      soltarOyentes.current?.()
+      soltarOyentes.current = null
+      const burbuja = sesion.current?.burbuja
+      sesion.current = null
+      if (burbuja) limpiarEstilosBurbuja(burbuja)
+      document.documentElement.classList.remove('reordenando')
+    }
+  }, [])
+
+  return (
+    <ReordenCtx.Provider value={{ arrastrandoId, indicador, alPresionarBurbuja, alTeclaAsa }}>
+      {children}
+    </ReordenCtx.Provider>
+  )
+}
+
+function AsaReordenar({
+  lineaId,
+  grupo,
+}: {
+  lineaId: string
+  grupo: GrupoTabla
+}) {
+  const { alTeclaAsa } = useReorden()
+  return (
+    <button
+      type="button"
+      className="asa"
+      draggable={false}
+      aria-label="Reordenar"
+      title="Arrastrar a otra fila"
+      onKeyDown={(event) => alTeclaAsa(event, lineaId, grupo)}
+    >
+      <svg viewBox="0 0 10 14" aria-hidden="true">
+        <circle cx="2" cy="2" r="1.1" />
+        <circle cx="8" cy="2" r="1.1" />
+        <circle cx="2" cy="7" r="1.1" />
+        <circle cx="8" cy="7" r="1.1" />
+        <circle cx="2" cy="12" r="1.1" />
+        <circle cx="8" cy="12" r="1.1" />
+      </svg>
+    </button>
+  )
+}
+
+function BurbujaLinea({
+  lineaId,
+  grupo,
+  children,
+}: {
+  lineaId: string
+  grupo: GrupoTabla
+  children: ReactNode
+}) {
+  const { arrastrandoId, alPresionarBurbuja } = useReorden()
   return (
     <td className="ancla-burbuja no-print">
-      <div className="burbuja">{children}</div>
+      <div
+        className={arrastrandoId === lineaId ? 'burbuja arrastrando' : 'burbuja'}
+        onPointerDown={(event) => alPresionarBurbuja(event, lineaId, grupo)}
+        onDragStart={(event) => event.preventDefault()}
+      >
+        <AsaReordenar lineaId={lineaId} grupo={grupo} />
+        {children}
+      </div>
     </td>
   )
 }
@@ -87,7 +330,7 @@ function ControlesContribucion({
   onRemove: () => void
 }) {
   return (
-    <BurbujaLinea>
+    <BurbujaLinea lineaId={linea.id} grupo="contribucion">
       <RubroSelect linea={linea} onChange={onChange} />
       <button type="button" className="btn-mini" onClick={onRemove} aria-label="Quitar línea">
         ×
@@ -106,7 +349,7 @@ function ControlesHaber({
   onRemove: () => void
 }) {
   return (
-    <BurbujaLinea>
+    <BurbujaLinea lineaId={linea.id} grupo="haberes">
       <select
         aria-label="Tipo de línea"
         value={linea.tipo}
@@ -131,16 +374,25 @@ function ControlesHaber({
 
 function FilaEditable({
   linea,
+  grupo,
   controles,
   descuento = false,
 }: {
   linea: Linea
+  grupo: GrupoTabla
   controles: ReactNode
   descuento?: boolean
 }) {
   const setLinea = useStore((estado) => estado.setLinea)
+  const { arrastrandoId, indicador } = useReorden()
+  const clase = [
+    arrastrandoId === linea.id ? 'origen-arrastre' : '',
+    indicador?.id === linea.id ? (indicador.lugar === 'despues' ? 'soltar-despues' : 'soltar-antes') : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
   return (
-    <tr>
+    <tr data-linea-id={linea.id} data-grupo={grupo} className={clase || undefined}>
       <td>
         <CellInput
           ariaLabel="Concepto"
@@ -187,6 +439,7 @@ export function ReciboSheet() {
   const haberes = filasHaberes(recibo.lineas)
 
   return (
+    <ReordenProvider>
     <article className="sheet">
       <div className="encabezado">
         <div className="lab g-emp">Empleador</div>
@@ -353,6 +606,7 @@ export function ReciboSheet() {
             <FilaEditable
               key={linea.id}
               linea={linea}
+              grupo="contribucion"
               controles={
                 <ControlesContribucion
                   linea={linea}
@@ -397,6 +651,7 @@ export function ReciboSheet() {
             <FilaEditable
               key={linea.id}
               linea={linea}
+              grupo="haberes"
               descuento={linea.tipo === 'deduccion'}
               controles={
                 <ControlesHaber
@@ -533,5 +788,6 @@ export function ReciboSheet() {
         </div>
       </div>
     </article>
+    </ReordenProvider>
   )
 }

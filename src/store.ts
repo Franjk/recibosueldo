@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { nuevaLinea, reciboVacio, rubroDeLinea } from './calc.ts'
+import { nuevaLinea, reciboVacio, reordenarLinea, rubroDeLinea, type LugarLinea } from './calc.ts'
 import { guardarReciboLocal, leerReciboLocal } from './io.ts'
 import type { Linea, Recibo, TipoLinea } from './types.ts'
 
@@ -10,6 +10,7 @@ interface Acciones {
   setLinea: (id: string, patch: Partial<Linea>) => void
   addLinea: (tipo: TipoLinea) => void
   removeLinea: (id: string) => void
+  moverLinea: (id: string, destinoId: string, lugar: LugarLinea) => void
   vaciar: () => void
   cargar: (recibo: Recibo) => void
 }
@@ -44,6 +45,11 @@ export const useStore = create<Store>()(
             return { lineas }
           }
           return { lineas: [...estado.lineas, linea] }
+        }),
+      moverLinea: (id, destinoId, lugar) =>
+        set((estado) => {
+          const lineas = reordenarLinea(estado.lineas, id, destinoId, lugar)
+          return lineas === estado.lineas ? estado : { lineas }
         }),
       removeLinea: (id) =>
         set((estado) => {
