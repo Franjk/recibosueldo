@@ -1,22 +1,53 @@
 # Talonario
 
-Recibos de haberes en el navegador, con la estructura del Decreto 407/2026. No hay servidor de datos: todo queda en este navegador.
+Talonario es una aplicación web para completar recibos de haberes en el navegador. Permite editar los datos del empleador y del empleado, cargar conceptos, consultar los totales y la composición salarial, e imprimir el recibo o guardarlo como PDF. Los datos se conservan en el almacenamiento local del navegador; la aplicación no usa un servidor de datos.
+
+## Usar la aplicación
+
+1. Completá los datos del encabezado y del período.
+2. Editá las filas de contribuciones, haberes y descuentos. Podés agregar o quitar filas, cambiar su tipo o rubro y reordenarlas arrastrando el control de cada fila o con sus flechas del teclado.
+3. Escribí un concepto propio o elegí una sugerencia del catálogo. Las sugerencias se pueden recorrer con las flechas, seleccionar con `Enter` y cerrar con `Escape`.
+4. Revisá el sueldo bruto, el neto, el costo total del empleador y el detalle de la composición salarial. El gráfico puede mostrarse en color o en blanco y negro.
+5. Usá **Imprimir o guardar PDF** para abrir el diálogo de impresión del navegador. El recibo está preparado para papel A4.
+
+Los recibos nuevos incluyen una plantilla editable con sueldo básico, aportes y contribuciones habituales. Las bases y los porcentajes empiezan vacíos, y los montos en cero. La aplicación no carga tasas por defecto: ingresá las que correspondan a cada recibo.
+
+Al seleccionar un concepto porcentual, completá **Base** y el porcentaje en **Unidad** para calcular el monto. Si falta alguno, la fila indica qué dato falta y su monto se considera cero en los totales. El control **Automático** permite pasar a un monto manual y volver al cálculo. Los conceptos con fórmulas particulares, como horas extra, aguinaldo y vacaciones, se cargan manualmente.
+
+## Guardar y recuperar recibos
+
+- Los cambios se conservan automáticamente en el almacenamiento local de este navegador.
+- **Guardar** descarga una copia editable en formato JSON y guarda otra copia local. El nombre del archivo toma los datos disponibles del empleado y del período.
+- **Cargar** abre un archivo JSON y, tras pedir confirmación, reemplaza el recibo que está en pantalla.
+- **Vaciar** pide confirmación y restaura la plantilla inicial con los datos del recibo en blanco.
+
+Conservá el archivo JSON si necesitás abrir el recibo en otro navegador o equipo. Los archivos nuevos usan la versión 2 del formato; también se aceptan archivos de la versión 1, cuyos montos se mantienen manuales.
+
+La exportación a Excel está deshabilitada en la interfaz actual. El repositorio contiene código para generar archivos `.xlsx`, pero esa opción no aparece en la aplicación.
+
+## Desarrollo local
+
+Necesitás Node.js y npm. Desde la raíz del proyecto:
 
 ```bash
-npm install
+npm ci
 npm run dev
+```
+
+Abrí la dirección local que muestra Vite. Para comprobar el proyecto:
+
+```bash
 npm test
+npm run lint
 npm run build
 ```
 
-`dist/` se sirve como sitio estático. Hay un `Caddyfile` de ejemplo en la raíz.
+`npm test` ejecuta las pruebas con Vitest; `npm run lint` ejecuta Oxlint. `npm run build` comprueba TypeScript y genera el sitio estático en `dist/`. Podés revisar ese resultado localmente con `npm run preview`.
 
-Desde «Archivo» en el sidebar, «Exportar a Excel» descarga un `.xlsx` cuya primera hoja, «Recibo», reproduce la distribución de impresión: encabezado, tablas, totales, composición salarial, gráfico y firmas, en A4 vertical. Las tablas contienen celdas editables e importes numéricos. El gráfico conserva sus etiquetas y la selección de color o blanco y negro como imagen de alta resolución; representa los valores al exportar y no se recalcula al editar Excel. La hoja «Datos» conserva además el detalle tabular y los cálculos pendientes. El nombre incluye el empleado y el período. «Guardar» y «Cargar» siguen usando JSON para continuar editando un recibo.
+## Publicación
 
-Al escribir un concepto aparecen sugerencias según el tipo de fila. Se pueden elegir con mouse o flechas y Enter; Escape cierra la lista. También se puede escribir cualquier concepto propio, con monto manual.
+Publicá el contenido de `dist/` en un servidor de archivos estáticos. El [`Caddyfile`](Caddyfile) de la raíz es un ejemplo: reemplazá el dominio y ajustá la ruta del directorio antes de usarlo.
 
-Los recibos nuevos y la acción «Vaciar» incluyen una plantilla editable con sueldo básico, descuentos de jubilación, Ley 19032 y obra social, y contribuciones de jubilación, Ley 19032, FNE, asignaciones familiares, obra social, ART porcentual y fija, y seguro de vida obligatorio. Las bases y tasas quedan vacías y los importes comienzan en cero. Los recibos guardados o importados conservan sus propias filas.
+## Licencia
 
-Los conceptos porcentuales del catálogo calculan el monto al completar Base y el porcentaje en Unidad. Las tasas las ingresa el usuario: no se asume un convenio ni régimen. El control «Automático» permite pasar a monto manual y volver a calcular. Los conceptos con fórmulas particulares (horas extra, aguinaldo y vacaciones) se cargan manualmente.
-
-Los archivos nuevos usan la versión 2 y conservan la regla de cálculo. Se siguen aceptando archivos de versión 1; sus importes se mantienen manuales, igual que los recibos anteriores guardados en el navegador.
+Este proyecto se distribuye bajo la [licencia MIT](LICENSE).
