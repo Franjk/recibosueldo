@@ -126,7 +126,7 @@ describe('json del recibo', () => {
       'El archivo no es un recibo de haberes.',
     )
     expect(() =>
-      parsearRecibo(JSON.stringify({ formato: 'recibo-haberes', version: 2, recibo: {} })),
+      parsearRecibo(JSON.stringify({ formato: 'recibo-haberes', version: 99, recibo: {} })),
     ).toThrow('Este archivo usa una versión que esta aplicación no puede leer.')
     expect(() => parsearRecibo(JSON.stringify({ empresa: 'Norte' }))).toThrow(
       'Las líneas del recibo tienen que ser una lista.',

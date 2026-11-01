@@ -38,6 +38,10 @@ export interface Linea {
   unidad: string
   baseCentavos: number | null
   montoCentavos: number
+  conceptoId?: string
+  modoCalculo?: 'manual' | 'porcentaje'
+  /** Centésimas de punto porcentual: 1100 representa 11 %. */
+  porcentajeBps?: number | null
 }
 
 export interface Recibo {

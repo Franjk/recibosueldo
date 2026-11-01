@@ -3,11 +3,13 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { nuevaLinea, reciboVacio, reordenarLinea, rubroDeLinea, type LugarLinea } from './calc.ts'
 import { guardarReciboLocal, leerReciboLocal } from './io.ts'
+import { actualizarLinea, recalcularLinea, seleccionarConcepto, type Concepto } from './conceptos.ts'
 import type { Linea, Recibo, TipoLinea } from './types.ts'
 
 interface Acciones {
   patch: (patch: Partial<Omit<Recibo, 'lineas'>>) => void
   setLinea: (id: string, patch: Partial<Linea>) => void
+  seleccionarConcepto: (id: string, concepto: Concepto) => void
   addLinea: (tipo: TipoLinea) => void
   removeLinea: (id: string) => void
   moverLinea: (id: string, destinoId: string, lugar: LugarLinea) => void
@@ -28,10 +30,12 @@ export const useStore = create<Store>()(
         set((estado) => ({
           lineas: estado.lineas.map((linea) => {
             if (linea.id !== id) return linea
-            const siguiente = { ...linea, ...patch }
+            const siguiente = actualizarLinea(linea, patch)
             return { ...siguiente, rubro: rubroDeLinea(siguiente.tipo, siguiente.rubro) }
           }),
         })),
+      seleccionarConcepto: (id, concepto) =>
+        set((estado) => ({ lineas: estado.lineas.map((linea) => linea.id === id ? seleccionarConcepto(linea, concepto) : linea) })),
       addLinea: (tipo) =>
         set((estado) => {
           const linea = nuevaLinea(tipo)
@@ -68,18 +72,18 @@ export const useStore = create<Store>()(
         set({
           ...recibo,
           lineas: recibo.lineas.map((linea) => ({
-            ...linea,
+            ...recalcularLinea(linea),
             rubro: rubroDeLinea(linea.tipo, linea.rubro),
           })),
         }),
     }),
     {
       name: NOMBRE_PERSISTENCIA,
-      version: 3,
+      version: 4,
       migrate: (persistedState) => {
         const base = reciboVacio()
         const previo = (persistedState ?? {}) as Partial<Recibo>
-        const lineas = previo.lineas && previo.lineas.length > 0 ? previo.lineas : base.lineas
+        const lineas = previo.lineas ?? base.lineas
         return {
           ...base,
           ...previo,
@@ -87,6 +91,9 @@ export const useStore = create<Store>()(
           periodoDeposito: previo.periodoDeposito ?? '',
           lineas: lineas.map((linea) => ({
             ...linea,
+            conceptoId: undefined,
+            modoCalculo: 'manual' as const,
+            porcentajeBps: undefined,
             rubro: rubroDeLinea(linea.tipo, linea.rubro),
           })),
         }

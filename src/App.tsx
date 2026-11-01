@@ -98,7 +98,7 @@ export default function App() {
               type="button"
               className="btn secondary danger"
               onClick={() => {
-                if (window.confirm('¿Vaciar todos los campos del recibo?')) {
+                if (window.confirm('¿Vaciar los datos del recibo y restaurar los conceptos iniciales?')) {
                   vaciar()
                   setGeneracion((actual) => actual + 1)
                   setError(null)

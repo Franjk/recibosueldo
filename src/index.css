@@ -358,6 +358,86 @@ select {
   text-align: right;
 }
 
+@media screen {
+  .cell-input.campo-pendiente {
+    box-shadow: inset 0 0 0 1px #dc2626;
+    border-radius: 2px;
+  }
+}
+
+.concepto-input {
+  position: relative;
+}
+
+.concepto-opciones {
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  width: max(100%, 22rem);
+  max-height: 19rem;
+  overflow-y: auto;
+  margin: 2px 0 0;
+  padding: 3px;
+  list-style: none;
+  border: 1px solid #a1a1aa;
+  border-radius: 4px;
+  background: white;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+}
+
+.concepto-opciones li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.concepto-opciones li:hover,
+.concepto-opciones li[aria-selected="true"] {
+  background: #e8f0f6;
+}
+
+.concepto-regla {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.porcentaje-input {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.porcentaje-input input {
+  min-width: 0;
+}
+
+.calculo-pendiente,
+.error-celda {
+  display: block;
+  font-size: 0.65rem;
+  line-height: 1.2;
+}
+
+.calculo-pendiente { color: var(--muted); }
+.error-celda { color: #b91c1c; }
+
+.burbuja .modo-calculo {
+  height: 16px;
+  padding: 0 5px;
+  border: 0;
+  border-radius: 4px;
+  background: #f4f4f5;
+  cursor: pointer;
+}
+
+.burbuja .modo-calculo[aria-pressed="true"] {
+  color: var(--accent);
+  background: #e8f0f6;
+}
+
 .banner {
   position: relative;
   isolation: isolate;

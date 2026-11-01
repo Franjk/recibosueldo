@@ -1,9 +1,10 @@
+import { conceptoDeLinea, recalcularLinea } from './conceptos.ts'
 import { rubroDeLinea } from './calc.ts'
 import type { Linea, Recibo, Rubro, TipoLinea } from './types.ts'
 import { RUBROS, TIPOS_LINEA } from './types.ts'
 
 export const FORMATO_RECIBO = 'recibo-haberes'
-export const VERSION_RECIBO = 1
+export const VERSION_RECIBO = 2
 export const CLAVE_RECIBO_LOCAL = 'recibo-haberes-guardado'
 
 const CAMPOS_TEXTO = [
@@ -65,7 +66,7 @@ export function datosRecibo(recibo: Recibo): Recibo {
     periodoDeposito: recibo.periodoDeposito,
     fechaPagoAportes: recibo.fechaPagoAportes,
     fechaPago: recibo.fechaPago,
-    lineas: recibo.lineas.map((linea) => ({
+    lineas: recibo.lineas.map(recalcularLinea).map((linea) => ({
       id: linea.id,
       descripcion: linea.descripcion,
       tipo: linea.tipo,
@@ -73,6 +74,9 @@ export function datosRecibo(recibo: Recibo): Recibo {
       unidad: linea.unidad,
       baseCentavos: linea.baseCentavos,
       montoCentavos: linea.montoCentavos,
+      conceptoId: linea.conceptoId,
+      modoCalculo: linea.modoCalculo,
+      porcentajeBps: linea.porcentajeBps,
     })),
   }
 }
@@ -124,7 +128,7 @@ export function parsearRecibo(texto: string): Recibo {
   let cuerpo: unknown = data
   if ('formato' in data || 'version' in data || 'recibo' in data) {
     if (data.formato !== FORMATO_RECIBO) throw new Error('El archivo no es un recibo de haberes.')
-    if (data.version !== VERSION_RECIBO) {
+    if (data.version !== 1 && data.version !== VERSION_RECIBO) {
       throw new Error('Este archivo usa una versión que esta aplicación no puede leer.')
     }
     if (!('recibo' in data)) throw new Error('El archivo no incluye los datos del recibo.')
@@ -166,7 +170,7 @@ function textoCampo(valor: unknown, etiqueta: string): string {
 function lineaDesdeJson(valor: unknown, numero: number, usados: Set<string>): Linea {
   if (!esObjeto(valor)) throw new Error(`La línea ${numero} no es un objeto.`)
   const tipo = tipoLinea(valor.tipo, numero)
-  return {
+  const linea: Linea = {
     id: idLinea(valor.id, usados),
     descripcion: textoCampo(valor.descripcion, `descripción de la línea ${numero}`),
     tipo,
@@ -184,6 +188,26 @@ function lineaDesdeJson(valor: unknown, numero: number, usados: Set<string>): Li
       `La línea ${numero}: el monto tiene que ser un número en centavos.`,
     ),
   }
+
+  if (valor.conceptoId !== undefined) {
+    linea.conceptoId = textoCampo(valor.conceptoId, `concepto de la línea ${numero}`)
+  }
+  if (valor.modoCalculo !== undefined) {
+    if (valor.modoCalculo !== 'manual' && valor.modoCalculo !== 'porcentaje') {
+      throw new Error(`La línea ${numero}: el modo de cálculo no es válido.`)
+    }
+    linea.modoCalculo = valor.modoCalculo
+  }
+  if (valor.porcentajeBps !== undefined) {
+    if (valor.porcentajeBps !== null && (typeof valor.porcentajeBps !== 'number' || !Number.isSafeInteger(valor.porcentajeBps) || valor.porcentajeBps < 0)) {
+      throw new Error(`La línea ${numero}: el porcentaje no es válido.`)
+    }
+    linea.porcentajeBps = valor.porcentajeBps as number | null
+  }
+  if (linea.modoCalculo === 'porcentaje' && !conceptoDeLinea(linea)?.porcentual) {
+    throw new Error(`La línea ${numero}: el concepto no permite cálculo porcentual.`)
+  }
+  return recalcularLinea(linea)
 }
 
 function tipoLinea(valor: unknown, numero: number): TipoLinea {

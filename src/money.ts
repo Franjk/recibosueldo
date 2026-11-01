@@ -58,15 +58,17 @@ export function producto(baseCentavos: number, cantidad: number): number {
 }
 
 export function parseTasa(input: string): number | null {
-  const texto = input.trim().replace('%', '').replace(/\s/g, '').replace(',', '.')
+  const texto = input.trim().replace(/\s*%$/, '').trim().replace(',', '.')
   if (!texto) return 0
+  if (!/^\d+(?:\.\d{1,2})?$/.test(texto)) return null
   const valor = Number(texto)
-  if (!Number.isFinite(valor) || valor < 0) return null
-  return Math.round(valor * 100)
+  const bps = Math.round(valor * 100)
+  return Number.isSafeInteger(bps) ? bps : null
 }
 
 export function formatTasaInput(bps: number): string {
   return (bps / 100).toLocaleString('es-AR', {
+    useGrouping: false,
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
   })

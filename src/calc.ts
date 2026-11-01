@@ -1,3 +1,4 @@
+import { CONCEPTOS_INICIALES, recalcularLinea, seleccionarConcepto } from './conceptos.ts'
 import type { CorteRubro, Linea, Recibo, Rubro, TipoLinea, Totales } from './types.ts'
 import { RUBRO_LABEL, RUBROS } from './types.ts'
 
@@ -36,7 +37,7 @@ export function reciboVacio(): Recibo {
     periodoDeposito: '',
     fechaPagoAportes: '',
     fechaPago: '',
-    lineas: [nuevaLinea('contribucion'), nuevaLinea('remunerativo')],
+    lineas: CONCEPTOS_INICIALES.map((concepto) => seleccionarConcepto(nuevaLinea(concepto.tipo), concepto)),
   }
 }
 
@@ -49,6 +50,7 @@ function corteVacio(): CorteRubro {
 }
 
 export function totales(lineas: Linea[]): Totales {
+  lineas = lineas.map(recalcularLinea)
   const remunerativo = sumar(lineas, 'remunerativo')
   const noRemunerativo = sumar(lineas, 'no_remunerativo')
   const deducciones = sumar(lineas, 'deduccion')

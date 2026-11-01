@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { reordenarLinea, totales } from './calc.ts'
 import { enLetrasPesos, numeroEnLetras } from './letras.ts'
-import { parsePesos, porcentaje } from './money.ts'
+import { formatTasaInput, parsePesos, parseTasa, porcentaje } from './money.ts'
 import type { Linea } from './types.ts'
 
 function linea(
@@ -28,6 +28,17 @@ describe('pesos', () => {
 
   it('redondea un porcentaje en centavos', () => {
     expect(porcentaje(100_000_000, 1100)).toBe(11_000_000)
+  })
+
+  it('lee tasas decimales sin confundir porcentajes con importes', () => {
+    expect(parseTasa('1,63')).toBe(163)
+    expect(parseTasa('1.63')).toBe(163)
+    expect(parseTasa('11 %')).toBe(1100)
+    expect(parseTasa('0')).toBe(0)
+    for (const tasa of ['-1', 'abc', '1e2', '1,234', 'Infinity', '999999999999999999']) {
+      expect(parseTasa(tasa)).toBeNull()
+    }
+    expect(parseTasa(formatTasaInput(100000))).toBe(100000)
   })
 })
 

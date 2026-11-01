@@ -8,13 +8,15 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react'
+import { conceptoDeLinea, esAutomatica, faltaCalculo } from '../conceptos.ts'
 import { filasHaberes, filasTipo, totales, type LugarLinea } from '../calc.ts'
 import { enLetrasPesos } from '../letras.ts'
 import { formatNumero } from '../money.ts'
 import { useStore } from '../store.ts'
 import type { Linea, Rubro, TipoLinea } from '../types.ts'
 import { RUBRO_LABEL, RUBROS, TIPO_HABER_LABEL } from '../types.ts'
-import { CellInput, MoneyCell } from './Fields.tsx'
+import { ConceptoInput } from './ConceptoInput.tsx'
+import { CellInput, MoneyCell, PorcentajeCell } from './Fields.tsx'
 import { DefsPatrones, PieChart } from './PieChart.tsx'
 
 function dinero(centavos: number): string {
@@ -149,7 +151,7 @@ function ReordenProvider({ children }: { children: ReactNode }) {
   function alPresionarBurbuja(event: ReactPointerEvent<HTMLDivElement>, id: string, grupo: GrupoTabla) {
     if (event.button !== 0 || sesion.current) return
     const target = event.target
-    if (!(target instanceof Element) || target.closest('select, .btn-mini')) return
+    if (!(target instanceof Element) || target.closest('select, button:not(.asa)')) return
     event.preventDefault()
 
     const burbuja = event.currentTarget
@@ -320,6 +322,33 @@ function BotonAgregar({
   )
 }
 
+function ModoCalculo({ linea, onChange }: { linea: Linea; onChange: (patch: Partial<Linea>) => void }) {
+  const [error, setError] = useState('')
+  if (!conceptoDeLinea(linea)?.porcentual) return null
+  return (
+    <>
+    <button
+      type="button"
+      className="modo-calculo"
+      aria-label="Cálculo automático"
+      aria-pressed={esAutomatica(linea)}
+      title={esAutomatica(linea) ? 'Pasar a monto manual' : 'Calcular monto con base y porcentaje'}
+      onClick={() => {
+        try {
+          onChange({ modoCalculo: esAutomatica(linea) ? 'manual' : 'porcentaje' })
+          setError('')
+        } catch {
+          setError('El monto calculado es demasiado grande. Revisá la base y el porcentaje.')
+        }
+      }}
+    >
+      {esAutomatica(linea) ? 'Automático' : 'Manual'}
+    </button>
+    {error && <small role="alert" className="error-celda">{error}</small>}
+    </>
+  )
+}
+
 function ControlesContribucion({
   linea,
   onChange,
@@ -332,6 +361,7 @@ function ControlesContribucion({
   return (
     <BurbujaLinea lineaId={linea.id} grupo="contribucion">
       <RubroSelect linea={linea} onChange={onChange} />
+      <ModoCalculo linea={linea} onChange={onChange} />
       <button type="button" className="btn-mini" onClick={onRemove} aria-label="Quitar línea">
         ×
       </button>
@@ -365,6 +395,7 @@ function ControlesHaber({
         ))}
       </select>
       {linea.tipo === 'deduccion' && <RubroSelect linea={linea} onChange={onChange} />}
+      <ModoCalculo linea={linea} onChange={onChange} />
       <button type="button" className="btn-mini" onClick={onRemove} aria-label="Quitar línea">
         ×
       </button>
@@ -384,6 +415,10 @@ function FilaEditable({
   descuento?: boolean
 }) {
   const setLinea = useStore((estado) => estado.setLinea)
+  const seleccionarConcepto = useStore((estado) => estado.seleccionarConcepto)
+  const automatico = esAutomatica(linea)
+  const faltante = faltaCalculo(linea)
+  const ayudaId = `calculo-${linea.id}`
   const { arrastrandoId, indicador } = useReorden()
   const clase = [
     arrastrandoId === linea.id ? 'origen-arrastre' : '',
@@ -394,24 +429,31 @@ function FilaEditable({
   return (
     <tr data-linea-id={linea.id} data-grupo={grupo} className={clase || undefined}>
       <td>
-        <CellInput
-          ariaLabel="Concepto"
+        <ConceptoInput
           value={linea.descripcion}
+          tipo={linea.tipo}
           onChange={(descripcion) => setLinea(linea.id, { descripcion })}
+          onSelect={(concepto) => seleccionarConcepto(linea.id, concepto)}
         />
       </td>
       <td>
-        <CellInput
+        {automatico ? (
+          <PorcentajeCell
+            value={linea.porcentajeBps ?? null}
+            onChange={(porcentajeBps) => setLinea(linea.id, { porcentajeBps })}
+          />
+        ) : <CellInput
           className="mono right"
           ariaLabel="Unidad"
           value={linea.unidad}
           onChange={(unidad) => setLinea(linea.id, { unidad })}
-        />
+        />}
       </td>
       <td>
         <MoneyCell
           emptyAsBlank
           ariaLabel="Base"
+          pendiente={automatico && linea.baseCentavos === null}
           value={linea.baseCentavos}
           onChange={(baseCentavos) => setLinea(linea.id, { baseCentavos })}
         />
@@ -419,12 +461,22 @@ function FilaEditable({
       <td>
         <div className={descuento ? 'descuento' : undefined}>
           {descuento && <span className="signo">−</span>}
-          <MoneyCell
+          {automatico ? (
+            <input
+              className={`cell-input mono right${faltante ? ' campo-pendiente' : ''}`}
+              aria-label="Monto"
+              aria-invalid={!!faltante}
+              aria-describedby={faltante ? ayudaId : undefined}
+              readOnly
+              value={faltante ? '' : formatNumero(linea.montoCentavos)}
+            />
+          ) : <MoneyCell
             ariaLabel="Monto"
             value={linea.montoCentavos}
             onChange={(montoCentavos) => setLinea(linea.id, { montoCentavos: montoCentavos ?? 0 })}
-          />
+          />}
         </div>
+        {faltante && <small id={ayudaId} className="calculo-pendiente no-print" role="status">{faltante}</small>}
       </td>
       {controles}
     </tr>
